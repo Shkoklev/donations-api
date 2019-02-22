@@ -1,0 +1,60 @@
+CREATE TABLE "donor" (
+	"id" BIGSERIAL PRIMARY KEY,
+	"first_name" varchar(20),
+	"last_name" varchar(30),
+	"email" varchar,
+	"password" varchar,
+	"phone" varchar(15),
+	"picture_url" varchar,
+	"points" INT,
+	"failed_consecutive_donations" SMALLINT
+)
+
+CREATE TABLE "demand" (
+	"id" BIGSERIAL PRIMARY KEY,
+	"name" varchar(50)
+)
+
+CREATE TABLE "organization_category" (
+	"id" BIGSERIAL PRIMARY KEY,
+	"name" varchar(30)
+)
+
+CREATE TABLE "organization" (
+	"id" BIGSERIAL PRIMARY KEY,
+	"name" varchar(30),
+	"phnoe" varchar(15),
+	"picture_url" varchar,
+	"email" varchar,
+	"category" BIGINT REFERENCES "organization_category"(id) 
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
+)
+
+CREATE TABLE "organization_demand" (
+	"id" BIGSERIAL PRIMARY KEY,
+	"organization" BIGINT REFERENCES "organization"(id)
+		 ON DELETE SET NULL 
+		 ON UPDATE CASCADE,
+  	"demand" BIGINT REFERENCES "demand"(id)
+		 ON DELETE CASCADE
+		 ON UPDATE CASCADE,
+	"quantity" INT 
+)	
+
+CREATE TABLE "donation" (
+	"id" BIGSERIAL PRIMARY KEY,
+	"donor" BIGINT REFERENCES "donor"(id)
+		ON DELETE SET NULL
+		ON UPDATE CASCADE,
+	"organization" BIGINT REFERENCES "organization"(id) 
+		ON DELETE SET NULL
+		ON UPDATE CASCADE,
+	"demand" BIGINT REFERENCES "demand"(id)
+		ON DELETE SET NULL
+		ON UPDATE CASCADE,
+	"quantity" INT,
+	"points" INT,
+	"status" varchar(20),
+	"duration" TIMESTAMP WITHOUT TIME ZONE
+)
