@@ -1,35 +1,36 @@
 CREATE TABLE "donor" (
 	"id" BIGSERIAL PRIMARY KEY,
-	"first_name" varchar(20),
-	"last_name" varchar(30),
-	"email" varchar,
-	"password" varchar,
-	"phone" varchar(15),
+	"first_name" varchar(20) NOT NULL,
+	"last_name" varchar(30) NOT NULL,
+	"email" varchar UNIQUE NOT NULL,
+	"password" varchar UNIQUE NOT NULL,
+	"phone" varchar(15) UNIQUE NOT NULL,
 	"picture_url" varchar,
 	"points" INT,
 	"failed_consecutive_donations" SMALLINT
-)
+);
 
 CREATE TABLE "demand" (
 	"id" BIGSERIAL PRIMARY KEY,
 	"name" varchar(50)
-)
+);
 
 CREATE TABLE "organization_category" (
 	"id" BIGSERIAL PRIMARY KEY,
 	"name" varchar(30)
-)
+);
 
 CREATE TABLE "organization" (
 	"id" BIGSERIAL PRIMARY KEY,
-	"name" varchar(30),
-	"phnoe" varchar(15),
+	"name" varchar(30) NOT NULL,
+	"phone" varchar(15) UNIQUE NOT NULL,
 	"picture_url" varchar,
-	"email" varchar,
+	"email" varchar UNIQUE NOT NULL,
+	"password" varchar UNIQUE NOT NULL,
 	"category" BIGINT REFERENCES "organization_category"(id) 
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
-)
+);
 
 CREATE TABLE "organization_demand" (
 	"id" BIGSERIAL PRIMARY KEY,
@@ -40,7 +41,7 @@ CREATE TABLE "organization_demand" (
 		 ON DELETE CASCADE
 		 ON UPDATE CASCADE,
 	"quantity" INT 
-)	
+);	
 
 CREATE TABLE "donation" (
 	"id" BIGSERIAL PRIMARY KEY,
@@ -53,7 +54,7 @@ CREATE TABLE "donation" (
 	"demand" BIGINT REFERENCES "demand"(id)
 		ON DELETE SET NULL
 		ON UPDATE CASCADE,
-	"quantity" INT,
+	"quantity" INT NOT NULL,
 	"points" INT,
 	"status" varchar(20),
 	"duration" TIMESTAMP WITHOUT TIME ZONE

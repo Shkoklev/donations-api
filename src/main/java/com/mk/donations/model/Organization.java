@@ -14,14 +14,20 @@ public class Organization {
             generator = "organization_id_seq")
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(unique = true, nullable = false)
     private String phone;
 
     @Column(name="picture_url")
     private String pictureUrl;
 
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @Column(unique = true, nullable = false)
+    private String password;
 
     @ManyToOne
     @JoinColumn(name="category")
@@ -35,6 +41,14 @@ public class Organization {
         this.pictureUrl = pictureUrl;
         this.email = email;
         this.organizationCategory = organizationCategory;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
