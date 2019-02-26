@@ -36,7 +36,8 @@ public class Donor {
 
     private int failedConsecutiveDonations;
 
-    public Donor() {}
+    public Donor() {
+    }
 
     public Donor(String firstName, String lastName, String email, String password, String phone, String pictureUrl) {
         this.firstName = firstName;

@@ -24,7 +24,8 @@ public class DemandPerOrganization {
 
     private int quantity;
 
-    public DemandPerOrganization() {}
+    public DemandPerOrganization() {
+    }
 
     public DemandPerOrganization(Organization organization, Demand demand, int quantity) {
         this.organization = organization;

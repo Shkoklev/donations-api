@@ -1,23 +1,47 @@
+--CREATE OR REPLACE FUNCTION check_email(email varchar)
+--RETURNS integer AS $result$
+--declare
+--	result integer;
+--BEGIN 
+--	SELECT (COUNT(*) = 0) 
+--	into result
+--	FROM donor d,administrator a,organization o
+--	WHERE d.email = a.email 
+--	OR d.email = o.email 
+--	OR a.email = o.email;
+--	return result;
+--END;
+--$result$ LANGUAGE plpgsql;
+
+
 CREATE TABLE "donor" (
 	"id" BIGSERIAL PRIMARY KEY,
 	"first_name" varchar(20) NOT NULL,
 	"last_name" varchar(30) NOT NULL,
 	"email" varchar UNIQUE NOT NULL,
-	"password" varchar UNIQUE NOT NULL,
+	"password" varchar NOT NULL,
 	"phone" varchar(15) UNIQUE NOT NULL,
 	"picture_url" varchar,
 	"points" INT,
 	"failed_consecutive_donations" SMALLINT
 );
 
+CREATE TABLE "administrator" (
+	"id" BIGSERIAL PRIMARY KEY,
+	"email" varchar UNIQUE NOT NULL,
+	"password" varchar NOT NULL
+);
+
+
 CREATE TABLE "demand" (
 	"id" BIGSERIAL PRIMARY KEY,
-	"name" varchar(50)
+	"name" varchar(50) UNIQUE NOT NULL
 );
 
 CREATE TABLE "organization_category" (
 	"id" BIGSERIAL PRIMARY KEY,
-	"name" varchar(30)
+	"name" varchar(30) UNIQUE NOT NULL,
+	"picture_url" varchar
 );
 
 CREATE TABLE "organization" (
@@ -26,7 +50,7 @@ CREATE TABLE "organization" (
 	"phone" varchar(15) UNIQUE NOT NULL,
 	"picture_url" varchar,
 	"email" varchar UNIQUE NOT NULL,
-	"password" varchar UNIQUE NOT NULL,
+	"password" varchar NOT NULL,
 	"category" BIGINT REFERENCES "organization_category"(id) 
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
@@ -40,7 +64,7 @@ CREATE TABLE "organization_demand" (
   	"demand" BIGINT REFERENCES "demand"(id)
 		 ON DELETE CASCADE
 		 ON UPDATE CASCADE,
-	"quantity" INT 
+	"quantity" INT NOT NULL
 );	
 
 CREATE TABLE "donation" (
@@ -58,4 +82,13 @@ CREATE TABLE "donation" (
 	"points" INT,
 	"status" varchar(20),
 	"duration" TIMESTAMP WITHOUT TIME ZONE
-)
+);
+
+
+
+
+
+
+
+
+

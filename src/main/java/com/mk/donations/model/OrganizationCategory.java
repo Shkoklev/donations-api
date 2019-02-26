@@ -1,6 +1,8 @@
 package com.mk.donations.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "organization_category")
@@ -14,12 +16,21 @@ public class OrganizationCategory {
             generator = "organization_category_id_seq")
     private Long id;
 
+    @NotNull(message = "Името не смее да е празно !")
+    @NotEmpty(message = "Името не смее да е празно !")
     private String name;
 
-    public OrganizationCategory() {}
+    @NotNull(message = "Url-то од сликата не смее да е празно !")
+    @NotEmpty(message = "Url-то од сликата не смее да е празно !")
+    @Column(name = "picture_url")
+    private String pictureUrl;
 
-    public OrganizationCategory(String name) {
+    public OrganizationCategory() {
+    }
+
+    public OrganizationCategory(String name, String pictureUrl) {
         this.name = name;
+        this.pictureUrl = pictureUrl;
     }
 
     public Long getId() {
@@ -36,5 +47,13 @@ public class OrganizationCategory {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPictureUrl() {
+        return pictureUrl;
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
     }
 }

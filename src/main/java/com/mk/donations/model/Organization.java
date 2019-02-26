@@ -20,7 +20,7 @@ public class Organization {
     @Column(unique = true, nullable = false)
     private String phone;
 
-    @Column(name="picture_url")
+    @Column(name = "picture_url")
     private String pictureUrl;
 
     @Column(unique = true, nullable = false)
@@ -30,16 +30,18 @@ public class Organization {
     private String password;
 
     @ManyToOne
-    @JoinColumn(name="category")
+    @JoinColumn(name = "category")
     private OrganizationCategory organizationCategory;
 
-    public Organization() {}
+    public Organization() {
+    }
 
-    public Organization(String name, String phone, String pictureUrl, String email, OrganizationCategory organizationCategory) {
+    public Organization(String name, String phone, String pictureUrl, String email, String password, OrganizationCategory organizationCategory) {
         this.name = name;
         this.phone = phone;
         this.pictureUrl = pictureUrl;
         this.email = email;
+        this.password = password;
         this.organizationCategory = organizationCategory;
     }
 

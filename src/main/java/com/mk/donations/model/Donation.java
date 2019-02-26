@@ -37,7 +37,8 @@ public class Donation {
     @Column(name = "duration")
     private LocalDateTime validUntil;
 
-    public Donation() {}
+    public Donation() {
+    }
 
     public Donation(int quantity, String status, Organization organization, Donor donor, Demand demand, LocalDateTime validUntil) {
         this.quantity = quantity;
