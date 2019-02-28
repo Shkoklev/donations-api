@@ -35,14 +35,14 @@ public class OrganizationCategoryServiceImpl implements OrganizationCategoryServ
                     organizationCategoryRepository.deleteById(id);
                     return category;
                 })
-                .orElseThrow(() -> new EntityNotFoundException("Категорија", id));
+                .orElseThrow(() -> new EntityNotFoundException("Категорија" + "  со id : " + id + " не постои."));
     }
 
     @Override
     public OrganizationCategory saveOrganizationCategory(OrganizationCategory organizationCategory) {
         organizationCategoryRepository.findByName(organizationCategory.getName())
                 .ifPresent((s) -> {
-                    throw new EntityAlreadyExistsException("Категорија", organizationCategory.getName());
+                    throw new EntityAlreadyExistsException(("Категорија" + " со име : " + organizationCategory.getName() + " веќе постои."));
                 });
         return organizationCategoryRepository.save(organizationCategory);
     }

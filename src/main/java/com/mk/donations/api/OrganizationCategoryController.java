@@ -1,17 +1,11 @@
 package com.mk.donations.api;
 
-import com.mk.donations.api.error.ApiError;
 import com.mk.donations.model.OrganizationCategory;
-import com.mk.donations.model.exception.EntityNotFoundException;
 import com.mk.donations.service.OrganizationCategoryService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/categories")

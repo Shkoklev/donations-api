@@ -11,10 +11,10 @@ public class EntityNotFoundException extends RuntimeException {
     }
 
     public EntityNotFoundException(String entityType, Long id) {
-        super(entityType + "  со id : " + id + " не постои");
+        super(entityType + "  со id : " + id + " не постои.");
     }
 
     public EntityNotFoundException(String entityType, String name) {
-        super(entityType + " so име : " + name + " не постои ");
+        super(entityType + " сo име : " + name + " не постои.");
     }
 }

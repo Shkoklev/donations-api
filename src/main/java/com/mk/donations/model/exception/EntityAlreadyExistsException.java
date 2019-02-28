@@ -11,10 +11,12 @@ public class EntityAlreadyExistsException extends RuntimeException {
     }
 
     public EntityAlreadyExistsException(String entityType, Long id) {
-        super(entityType + " со id : " + id + " веќе постои !");
+        super(entityType + " со id : " + id + " веќе постои.");
     }
 
     public EntityAlreadyExistsException(String entityType, String name) {
-        super(entityType + "  со име : " + name + " веќе постои !");
+        super(entityType + "  со име : " + name + " веќе постои.");
     }
+
+
 }
