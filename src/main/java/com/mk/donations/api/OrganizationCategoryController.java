@@ -1,6 +1,8 @@
 package com.mk.donations.api;
 
 import com.mk.donations.model.OrganizationCategory;
+import com.mk.donations.model.exception.ParameterMissingException;
+import com.mk.donations.model.request.OrganizationCategoryRequest;
 import com.mk.donations.service.OrganizationCategoryService;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +32,17 @@ public class OrganizationCategoryController {
     @PostMapping
     public OrganizationCategory saveOrganizationCategory(@Valid @RequestBody OrganizationCategory organizationCategory) {
         return organizationCategoryService.saveOrganizationCategory(organizationCategory);
+    }
+
+    @PutMapping("/{id}")
+    public OrganizationCategory updateOrganizationCategory(@PathVariable Long id, @RequestBody OrganizationCategoryRequest request) {
+        checkForEmptyRequest(request);
+        return organizationCategoryService.updateOrganizationCategory(id, request.name, request.pictureUrl);
+    }
+
+    public void checkForEmptyRequest(OrganizationCategoryRequest request) {
+        if ((request.name == null || request.name.isEmpty()) && (request.pictureUrl == null || request.pictureUrl.isEmpty()))
+            throw new ParameterMissingException("Внесете барем едно поле. ");
     }
 
 }

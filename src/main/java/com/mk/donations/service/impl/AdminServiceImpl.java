@@ -44,4 +44,9 @@ public class AdminServiceImpl implements AdminService, UserDetailsService {
         return adminRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(email));
     }
+
+    @Override
+    public void deleteAdmin(Admin admin) {
+        adminRepository.delete(admin);
+    }
 }

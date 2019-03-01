@@ -1,10 +1,16 @@
 package com.mk.donations.model;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.Collections;
 
 @Entity
 @Table(name = "donor")
-public class Donor {
+public class Donor implements UserDetails {
 
     @Id
     @SequenceGenerator(name = "donor_id_seq",
@@ -39,11 +45,10 @@ public class Donor {
     public Donor() {
     }
 
-    public Donor(String firstName, String lastName, String email, String password, String phone, String pictureUrl) {
+    public Donor(String firstName, String lastName, String email, String phone, String pictureUrl) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.password = password;
         this.phone = phone;
         this.pictureUrl = pictureUrl;
         this.points = 0;
@@ -120,5 +125,35 @@ public class Donor {
 
     public void setFailedConsecutiveDonations(int failedConsecutiveDonations) {
         this.failedConsecutiveDonations = failedConsecutiveDonations;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority("DONOR"));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

@@ -9,8 +9,10 @@ public interface OrganizationCategoryService {
 
     List<OrganizationCategory> getAllCategories();
 
+    OrganizationCategory saveOrganizationCategory(OrganizationCategory organizationCategory);
+
     void deleteOrganizationCategoryById(Long id);
 
-    OrganizationCategory saveOrganizationCategory(OrganizationCategory organizationCategory);
+    OrganizationCategory updateOrganizationCategory(Long id, String name, String pictureUrl);
 
 }

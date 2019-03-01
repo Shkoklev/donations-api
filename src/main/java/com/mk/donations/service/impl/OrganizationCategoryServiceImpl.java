@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OrganizationCategoryServiceImpl implements OrganizationCategoryService {
@@ -29,6 +28,15 @@ public class OrganizationCategoryServiceImpl implements OrganizationCategoryServ
     }
 
     @Override
+    public OrganizationCategory saveOrganizationCategory(OrganizationCategory organizationCategory) {
+        organizationCategoryRepository.findByName(organizationCategory.getName())
+                .ifPresent((category) -> {
+                    throw new EntityAlreadyExistsException("Категорија" + " со име : " + organizationCategory.getName() + " веќе постои.");
+                });
+        return organizationCategoryRepository.save(organizationCategory);
+    }
+
+    @Override
     public void deleteOrganizationCategoryById(Long id) {
         organizationCategoryRepository.findById(id)
                 .map((category) -> {
@@ -39,11 +47,15 @@ public class OrganizationCategoryServiceImpl implements OrganizationCategoryServ
     }
 
     @Override
-    public OrganizationCategory saveOrganizationCategory(OrganizationCategory organizationCategory) {
-        organizationCategoryRepository.findByName(organizationCategory.getName())
-                .ifPresent((s) -> {
-                    throw new EntityAlreadyExistsException(("Категорија" + " со име : " + organizationCategory.getName() + " веќе постои."));
-                });
-        return organizationCategoryRepository.save(organizationCategory);
+    public OrganizationCategory updateOrganizationCategory(Long id, String name, String pictureUrl) {
+        return organizationCategoryRepository.findById(id)
+                .map((category) -> {
+                    if (name != null && !name.isEmpty())
+                        category.setName(name);
+                    if (pictureUrl != null && !pictureUrl.isEmpty())
+                        category.setPictureUrl(pictureUrl);
+                    return organizationCategoryRepository.save(category);
+                })
+                .orElseThrow(() -> new EntityNotFoundException("Категорија" + "  со id : " + id + " не постои."));
     }
 }

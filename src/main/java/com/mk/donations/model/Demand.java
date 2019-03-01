@@ -1,6 +1,8 @@
 package com.mk.donations.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "demand")
@@ -14,6 +16,8 @@ public class Demand {
             generator = "demand_id_seq1")
     private Long id;
 
+    @NotNull(message = "не смее да е празно !")
+    @NotEmpty(message = "не смее да е празно !")
     private String name;
 
     public Demand() {

@@ -5,6 +5,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -21,9 +25,15 @@ public class Admin implements UserDetails {
     private Long id;
 
     @Column(unique = true, nullable = false)
+    @NotNull(message = "Email-Адресата не смее да е празна !")
+    @NotEmpty(message = "Email-Адресата не смее да е празна !")
+    @Email(message = "Невалиден формат на адреса")
     private String email;
 
     @Column(nullable = false)
+    @NotNull(message = "Пасвордот не смее да е празен !")
+    @NotEmpty(message = "Пасвордот не смее да е празен !")
+    @Size(min = 8, max = 30, message = "Пасвордот мора да содржи помеѓу 8 и 30 карактери")
     private String password;
 
     public Admin() {
