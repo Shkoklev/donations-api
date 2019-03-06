@@ -46,7 +46,7 @@ CREATE TABLE "organization_category" (
 
 CREATE TABLE "organization" (
 	"id" BIGSERIAL PRIMARY KEY,
-	"name" varchar(30) NOT NULL,
+	"name" varchar(30) UNIQUE NOT NULL,
 	"phone" varchar(15) UNIQUE NOT NULL,
 	"picture_url" varchar,
 	"email" varchar UNIQUE NOT NULL,

@@ -5,6 +5,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -20,19 +22,27 @@ public class Organization implements UserDetails {
             generator = "organization_id_seq")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
+    @NotNull(message = "Името не смее да е празно !")
+    @NotEmpty(message = "Името не смее да е празно !")
     private String name;
 
     @Column(unique = true, nullable = false)
+    @NotNull(message = "Телефонскиот број не смее да е празен !")
+    @NotEmpty(message = "Телефонскиот број не смее да е празен !")
     private String phone;
 
     @Column(name = "picture_url")
     private String pictureUrl;
 
     @Column(unique = true, nullable = false)
+    @NotNull(message = "Внесете Е-mail !")
+    @NotEmpty(message = "Внесете Е-mail !")
     private String email;
 
     @Column(unique = true, nullable = false)
+    @NotNull(message = "Внесете пасворд !")
+    @NotEmpty(message = "Внесете пасворд !")
     private String password;
 
     @ManyToOne
