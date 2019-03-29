@@ -5,8 +5,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -38,11 +40,13 @@ public class Organization implements UserDetails {
     @Column(unique = true, nullable = false)
     @NotNull(message = "Внесете Е-mail !")
     @NotEmpty(message = "Внесете Е-mail !")
+    @Email(message = "Невалиден формат на адреса")
     private String email;
 
     @Column(unique = true, nullable = false)
     @NotNull(message = "Внесете пасворд !")
     @NotEmpty(message = "Внесете пасворд !")
+    @Size(min = 8, max = 30, message = "Пасвордот мора да содржи помеѓу 8 и 30 карактери")
     private String password;
 
     @ManyToOne

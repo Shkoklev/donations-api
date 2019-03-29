@@ -1,5 +1,7 @@
 package com.mk.donations.model;
 
+import com.mk.donations.service.util.DemandQuantityValidator;
+
 import javax.persistence.*;
 
 @Entity
@@ -25,6 +27,7 @@ public class DemandPerOrganization {
     private int quantity;
 
     public DemandPerOrganization() {
+
     }
 
     public DemandPerOrganization(Organization organization, Demand demand, int quantity) {

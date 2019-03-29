@@ -3,7 +3,6 @@ package com.mk.donations.api.validation;
 import com.mk.donations.api.error.ApiError;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
