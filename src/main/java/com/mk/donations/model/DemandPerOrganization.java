@@ -1,6 +1,7 @@
 package com.mk.donations.model;
 
-import com.mk.donations.service.util.DemandQuantityValidator;
+
+import com.mk.donations.repository.converters.QuantityConverter;
 
 import javax.persistence.*;
 
@@ -24,13 +25,14 @@ public class DemandPerOrganization {
     @JoinColumn(name = "demand")
     private Demand demand;
 
-    private int quantity;
+    @Convert(converter = QuantityConverter.class)
+    private Quantity quantity;
 
     public DemandPerOrganization() {
 
     }
 
-    public DemandPerOrganization(Organization organization, Demand demand, int quantity) {
+    public DemandPerOrganization(Organization organization, Demand demand, Quantity quantity) {
         this.organization = organization;
         this.demand = demand;
         this.quantity = quantity;
@@ -38,6 +40,14 @@ public class DemandPerOrganization {
 
     public Long getId() {
         return id;
+    }
+
+    public Quantity getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Quantity quantity) {
+        this.quantity = quantity;
     }
 
     public void setId(Long id) {
@@ -60,11 +70,4 @@ public class DemandPerOrganization {
         this.demand = demand;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
 }

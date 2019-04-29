@@ -5,10 +5,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -32,10 +29,8 @@ public class Organization implements UserDetails {
     @Column(unique = true, nullable = false)
     @NotNull(message = "Телефонскиот број не смее да е празен !")
     @NotEmpty(message = "Телефонскиот број не смее да е празен !")
+    @Pattern(message = "мора да содржи само бројки", regexp = "^[0-9]+$")
     private String phone;
-
-    @Column(name = "picture_url")
-    private String pictureUrl;
 
     @Column(unique = true, nullable = false)
     @NotNull(message = "Внесете Е-mail !")
@@ -56,10 +51,9 @@ public class Organization implements UserDetails {
     public Organization() {
     }
 
-    public Organization(String name, String phone, String pictureUrl, String email, OrganizationCategory organizationCategory) {
+    public Organization(String name, String phone, String email, OrganizationCategory organizationCategory) {
         this.name = name;
         this.phone = phone;
-        this.pictureUrl = pictureUrl;
         this.email = email;
         this.organizationCategory = organizationCategory;
     }
@@ -94,14 +88,6 @@ public class Organization implements UserDetails {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public String getPictureUrl() {
-        return pictureUrl;
-    }
-
-    public void setPictureUrl(String pictureUrl) {
-        this.pictureUrl = pictureUrl;
     }
 
     public String getEmail() {

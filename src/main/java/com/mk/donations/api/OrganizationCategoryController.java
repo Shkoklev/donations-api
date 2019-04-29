@@ -35,7 +35,7 @@ public class OrganizationCategoryController {
     }
 
     @PutMapping("/{id}")
-    public OrganizationCategory updateOrganizationCategory(@PathVariable Long id, @RequestBody OrganizationCategoryRequest request) {
+    public OrganizationCategory updateOrganizationCategory(@PathVariable Long id, @Valid @RequestBody OrganizationCategoryRequest request) {
         checkForEmptyRequest(request);
         return organizationCategoryService.updateOrganizationCategory(id, request.name, request.pictureUrl);
     }

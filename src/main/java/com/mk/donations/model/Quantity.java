@@ -2,9 +2,9 @@ package com.mk.donations.model;
 
 import com.mk.donations.model.exception.UnComparableQuantitiesException;
 
-import java.util.Optional;
+import java.io.Serializable;
 
-public class Quantity implements Comparable<Quantity> {
+public class Quantity implements Comparable<Quantity>, Serializable {
 
     public final Double quantity;
 

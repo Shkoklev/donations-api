@@ -10,7 +10,7 @@ public final class QuantityFactory {
     }
 
     public static Quantity parse(String serialized) {
-        String[] parts = serialized.split("//|");
+        String[] parts = serialized.split("\\|");
         Double quantity = Double.parseDouble(parts[0]);
         Unit unit = Unit.valueOf(parts[1]);
         return new Quantity(quantity,unit);

@@ -3,6 +3,7 @@ package com.mk.donations.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "demand")
@@ -18,6 +19,7 @@ public class Demand {
 
     @NotNull(message = "не смее да е празно !")
     @NotEmpty(message = "не смее да е празно !")
+    @Pattern(message = "мора да содржи само мали кирилични букви", regexp = "^[а-шѓѕјќџ]+$")
     private String name;
 
     public Demand() {

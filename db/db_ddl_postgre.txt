@@ -48,7 +48,6 @@ CREATE TABLE "organization" (
 	"id" BIGSERIAL PRIMARY KEY,
 	"name" varchar(30) UNIQUE NOT NULL,
 	"phone" varchar(15) UNIQUE NOT NULL,
-	"picture_url" varchar,
 	"email" varchar UNIQUE NOT NULL,
 	"password" varchar NOT NULL,
 	"category" BIGINT REFERENCES "organization_category"(id) 
@@ -64,7 +63,7 @@ CREATE TABLE "organization_demand" (
   	"demand" BIGINT REFERENCES "demand"(id)
 		 ON DELETE CASCADE
 		 ON UPDATE CASCADE,
-	"quantity" INT NOT NULL
+	"quantity" varchar NOT NULL
 );	
 
 CREATE TABLE "donation" (
@@ -78,9 +77,9 @@ CREATE TABLE "donation" (
 	"demand" BIGINT REFERENCES "demand"(id)
 		ON DELETE SET NULL
 		ON UPDATE CASCADE,
-	"quantity" INT NOT NULL,
 	"points" INT,
 	"status" varchar(20),
+	"quantity" varchar NOT NULL,
 	"duration" TIMESTAMP WITHOUT TIME ZONE
 );
 

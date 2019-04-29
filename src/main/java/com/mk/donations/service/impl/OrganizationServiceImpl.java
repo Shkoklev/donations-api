@@ -1,9 +1,12 @@
 package com.mk.donations.service.impl;
 
+import com.mk.donations.model.Demand;
 import com.mk.donations.model.Organization;
+import com.mk.donations.model.Quantity;
 import com.mk.donations.model.exception.EntityAlreadyExistsException;
 import com.mk.donations.model.exception.EntityNotFoundException;
 import com.mk.donations.repository.DemandPerOrganizationRepository;
+import com.mk.donations.repository.OrganizationCategoryRepository;
 import com.mk.donations.repository.OrganizationRepository;
 import com.mk.donations.service.OrganizationService;
 import org.slf4j.Logger;
@@ -22,15 +25,27 @@ public class OrganizationServiceImpl implements OrganizationService, UserDetails
 
     private final OrganizationRepository organizationRepository;
     private final DemandPerOrganizationRepository demandPerOrganizationRepository;
+    private final OrganizationCategoryRepository organizationCategoryRepository;
 
-    public OrganizationServiceImpl(OrganizationRepository organizationRepository, DemandPerOrganizationRepository demandPerOrganizationRepository) {
+    public OrganizationServiceImpl(OrganizationRepository organizationRepository, DemandPerOrganizationRepository demandPerOrganizationRepository,
+                                   OrganizationCategoryRepository organizationCategoryRepository) {
         this.organizationRepository = organizationRepository;
         this.demandPerOrganizationRepository = demandPerOrganizationRepository;
+        this.organizationCategoryRepository = organizationCategoryRepository;
     }
 
     @Override
     public Page<Organization> getOrganizationsPage(Pageable pageable) {
         return organizationRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Organization> getOrganizationsPageByCategory(Pageable pageable, Long categoryId) {
+        return organizationCategoryRepository.findById(categoryId)
+                .map((category) -> {
+                    return organizationRepository.findAllByOrganizationCategory_Name(pageable, categoryId);
+                })
+                .orElseThrow(() -> new EntityAlreadyExistsException("Категорија" + " со id : " + categoryId + " веќе постои."));
     }
 
     @Override
@@ -49,6 +64,21 @@ public class OrganizationServiceImpl implements OrganizationService, UserDetails
     public Organization addOrganization(Organization organization) {
         checkOrganizationExistence(organization);
         return organizationRepository.save(organization);
+    }
+
+    @Override
+    public void addNewDemandToOrganization(Demand demand, Long organizationId, Quantity quantity) {
+
+    }
+
+    @Override
+    public void changeExistingDemandQuantity(Long demand, Long organizationId, Quantity quantity) {
+
+    }
+
+    @Override
+    public void deleteDemandFromOrganization(Long demandId, Long organizationId) {
+
     }
 
     @Override
@@ -76,7 +106,7 @@ public class OrganizationServiceImpl implements OrganizationService, UserDetails
                 });
         organizationRepository.findByPhone(phone)
                 .ifPresent((o) -> {
-                    throw new EntityAlreadyExistsException("Овој телефонскиот број е веќе регистриран. ");
+                    throw new EntityAlreadyExistsException("Овој телефонски број е веќе регистриран. ");
                 });
         organizationRepository.findByName(name)
                 .ifPresent((o) -> {
