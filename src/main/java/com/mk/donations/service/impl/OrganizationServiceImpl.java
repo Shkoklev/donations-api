@@ -43,7 +43,7 @@ public class OrganizationServiceImpl implements OrganizationService, UserDetails
     public Page<Organization> getOrganizationsPageByCategory(Pageable pageable, Long categoryId) {
         return organizationCategoryRepository.findById(categoryId)
                 .map((category) -> {
-                    return organizationRepository.findAllByOrganizationCategory_Name(pageable, categoryId);
+                    return organizationRepository.findAllByCategory_Name(pageable, categoryId);
                 })
                 .orElseThrow(() -> new EntityAlreadyExistsException("Категорија" + " со id : " + categoryId + " веќе постои."));
     }

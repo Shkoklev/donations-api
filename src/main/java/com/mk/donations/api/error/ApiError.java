@@ -1,11 +1,5 @@
 package com.mk.donations.api.error;
 
-import org.springframework.validation.FieldError;
-
-import java.util.ArrayList;
-import java.util.List;
-
-
 public class ApiError {
 
     private final int status;

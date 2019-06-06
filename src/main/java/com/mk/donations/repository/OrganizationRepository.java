@@ -16,5 +16,5 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
     Optional<Organization> findByPhone(String phone);
     Optional<Organization> findByName(String name);
 
-    Page<Organization> findAllByOrganizationCategory_Name(Pageable pageable, Long categoryId);
+    Page<Organization> findAllByCategory_Name(Pageable pageable, Long categoryId);
 }

@@ -46,7 +46,7 @@ public class Organization implements UserDetails {
 
     @ManyToOne
     @JoinColumn(name = "category")
-    private OrganizationCategory organizationCategory;
+    private OrganizationCategory category;
 
     public Organization() {
     }
@@ -55,7 +55,7 @@ public class Organization implements UserDetails {
         this.name = name;
         this.phone = phone;
         this.email = email;
-        this.organizationCategory = organizationCategory;
+        this.category = organizationCategory;
     }
 
     public void setPassword(String password) {
@@ -98,12 +98,12 @@ public class Organization implements UserDetails {
         this.email = email;
     }
 
-    public OrganizationCategory getOrganizationCategory() {
-        return organizationCategory;
+    public OrganizationCategory getCategory() {
+        return category;
     }
 
-    public void setOrganizationCategory(OrganizationCategory organizationCategory) {
-        this.organizationCategory = organizationCategory;
+    public void setCategory(OrganizationCategory organizationCategory) {
+        this.category = organizationCategory;
     }
 
     @Override

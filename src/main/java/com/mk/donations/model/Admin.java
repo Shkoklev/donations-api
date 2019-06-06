@@ -33,7 +33,7 @@ public class Admin implements UserDetails {
     @Column(nullable = false)
     @NotNull(message = "Пасвордот не смее да е празен !")
     @NotEmpty(message = "Пасвордот не смее да е празен !")
-    @Size(min = 8, max = 30, message = "Пасвордот мора да содржи помеѓу 8 и 30 карактери")
+    @Size(min = 8, max = 100, message = "Пасвордот мора да содржи помеѓу 8 и 30 карактери")
     private String password;
 
     public Admin() {

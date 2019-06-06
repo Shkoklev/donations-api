@@ -36,4 +36,9 @@ public class DemandController {
     public Demand updateDemand(@PathVariable Long id,@Valid @RequestBody Demand demand) {
         return demandService.updateDemand(id,demand.getName());
     }
+
+    @PostMapping("/link_to_category")
+    public void linkDemandToCategory() {
+
+    }
 }

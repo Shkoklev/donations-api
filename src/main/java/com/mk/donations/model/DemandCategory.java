@@ -6,30 +6,25 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Entity
-@Table(name = "demand")
-public class Demand {
+@Table(name = "demand_category")
+public class DemandCategory {
 
     @Id
-    @SequenceGenerator(name = "demand_id_seq",
-            sequenceName = "demand_id_seq",
+    @SequenceGenerator(name = "organization_category_id_seq",
+            sequenceName = "organization_category_id_seq",
             allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "demand_id_seq")
+            generator = "organization_category_id_seq")
     private Long id;
 
-    @NotNull(message = "не смее да е празно !")
-    @NotEmpty(message = "не смее да е празно !")
+    @NotNull(message = "Името не смее да е празно !")
+    @NotEmpty(message = "Името не смее да е празно !")
     @Pattern(message = "мора да содржи само мали кирилични букви", regexp = "^[а-шѓѕјќџ]+$")
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "category")
-    private DemandCategory category;
+    public DemandCategory() {}
 
-    public Demand() {
-    }
-
-    public Demand(String name) {
+    public DemandCategory(String name) {
         this.name = name;
     }
 
@@ -47,13 +42,5 @@ public class Demand {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public DemandCategory getCategory() {
-        return category;
-    }
-
-    public void setCategory(DemandCategory category) {
-        this.category = category;
     }
 }

@@ -14,5 +14,7 @@ public interface DemandService {
 
     Demand updateDemand(Long id, String name);
 
+    void linkDemandToCategory(String demandName, String categoryName);
+
 
 }

@@ -10,7 +10,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("/organization_categories")
 public class OrganizationCategoryController {
 
     private final OrganizationCategoryService organizationCategoryService;
