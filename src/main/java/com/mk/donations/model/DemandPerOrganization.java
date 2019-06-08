@@ -4,6 +4,7 @@ package com.mk.donations.model;
 import com.mk.donations.repository.converters.QuantityConverter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "organization_demand")
@@ -17,10 +18,12 @@ public class DemandPerOrganization {
             generator = "organization_demand_id_seq")
     private Long id;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "organization")
     private Organization organization;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "demand")
     private Demand demand;

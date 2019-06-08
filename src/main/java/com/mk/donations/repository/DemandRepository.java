@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface DemandRepository extends JpaRepository<Demand, Long> {
 
     Optional<Demand> findByName(String name);
+    boolean existsByName(String name);
 }

@@ -41,7 +41,7 @@ public class Organization implements UserDetails {
     @Column(unique = true, nullable = false)
     @NotNull(message = "Внесете пасворд !")
     @NotEmpty(message = "Внесете пасворд !")
-    @Size(min = 8, max = 30, message = "Пасвордот мора да содржи помеѓу 8 и 30 карактери")
+    @Size(min = 8, max = 100, message = "Пасвордот мора да содржи барем 8 карактери")
     private String password;
 
     @ManyToOne

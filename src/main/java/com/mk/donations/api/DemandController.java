@@ -1,6 +1,7 @@
 package com.mk.donations.api;
 
 import com.mk.donations.model.Demand;
+import com.mk.donations.model.request.DemandCategoryRequest;
 import com.mk.donations.service.DemandService;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +39,7 @@ public class DemandController {
     }
 
     @PostMapping("/link_to_category")
-    public void linkDemandToCategory() {
-
+    public void linkDemandToCategory(@Valid @RequestBody DemandCategoryRequest request) {
+        demandService.linkDemandToCategory(request.demandName, request.demandCategoryName);
     }
 }

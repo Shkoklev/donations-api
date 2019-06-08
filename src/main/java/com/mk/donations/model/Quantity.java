@@ -2,13 +2,19 @@ package com.mk.donations.model;
 
 import com.mk.donations.model.exception.UnComparableQuantitiesException;
 
+import javax.persistence.Column;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 public class Quantity implements Comparable<Quantity>, Serializable {
 
-    public final Double quantity;
+    @Column(unique = true, nullable = false)
+    @NotNull(message = "Внесете количина !")
+    public Double quantity;
 
-    public final Unit unit;
+    public Unit unit;
+
+    public Quantity() {}
 
     public Quantity(double quantity,Unit unit) {
         if(unit==null)

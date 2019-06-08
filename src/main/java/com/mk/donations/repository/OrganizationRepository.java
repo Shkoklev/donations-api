@@ -12,9 +12,12 @@ import java.util.Optional;
 public interface OrganizationRepository extends JpaRepository<Organization, Long> {
 
     boolean existsByEmail(String email);
+
     Optional<Organization> findByEmail(String email);
+
     Optional<Organization> findByPhone(String phone);
+
     Optional<Organization> findByName(String name);
 
-    Page<Organization> findAllByCategory_Name(Pageable pageable, Long categoryId);
+    Page<Organization> findAllByCategory_Name(Pageable pageable, String categoryName);
 }

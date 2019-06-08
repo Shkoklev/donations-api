@@ -2,7 +2,7 @@ package com.mk.donations.model;
 
 public enum Unit {
 
-    парчиња,
+    количина,
     литри,
     мегабајти,
     гигабајти,
