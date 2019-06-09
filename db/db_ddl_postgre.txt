@@ -16,7 +16,7 @@ CREATE TABLE "unit" (
 	"name" varchar(30) UNIQUE NOT NULL
 );
 
-CREATE TABLE "administrator" (
+CREATE TABLE "administrator" (	
 	"id" BIGSERIAL PRIMARY KEY,
 	"email" varchar UNIQUE NOT NULL,
 	"password" varchar NOT NULL
@@ -188,6 +188,15 @@ VALUES
 (9,'Министерство за внатрешни работи','078555123','mvr@hotmail.com','Password1!',3),
 (10,'Дом за деца без родители','078944423','dom.deca@hotmail.com','Password1!',3),
 (11,'Црвен крст на РМ','078944365','crven.krst@hotmail.com','Password1!',3);
+
+INSERT INTO "donor"
+("id","first_name","last_name","email","password","phone","points","failed_consecutive_donations","number_of_current_pending_donations")
+VALUES
+(1,'Ana','Stojanoska','ana@hotmail.com','ana12345','071234567','0','0','0'),
+(2,'Dimitri','Shkoklev','dimitri@hotmail.com','ana12345','071234565','0','0','0'),
+(3,'Filip','Trajkovski','trajo@hotmail.com','ana12345','071634567','0','0','0'),
+(4,'Stefan','Stojanoski','stefan@hotmail.com','ana12345','071236667','0','0','0'),
+(5,'Viktor','shkoklev','viktor@hotmail.com','ana12345','0716664567','0','0','0');
 
 INSERT INTO "organization_demand"
 ("id","organization","demand","quantity")

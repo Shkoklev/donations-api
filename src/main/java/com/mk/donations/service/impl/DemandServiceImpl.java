@@ -37,6 +37,11 @@ public class DemandServiceImpl implements DemandService {
     }
 
     @Override
+    public List<Demand> getAllDemandsByCategoryId(Long categoryId) {
+        return demandRepository.findByCategoryId(categoryId);
+    }
+
+    @Override
     public Demand saveDemand(String name, String category, String unitName) {
         demandRepository.findByName(name)
                 .ifPresent((d) -> {

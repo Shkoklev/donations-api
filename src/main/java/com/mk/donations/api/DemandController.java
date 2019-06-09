@@ -25,6 +25,11 @@ public class DemandController {
         return demandService.getAllDemands();
     }
 
+    @GetMapping("/{categoryId}")
+    public List<Demand> getAllByCategoryId(@PathVariable Long categoryId) {
+        return demandService.getAllDemandsByCategoryId(categoryId);
+    }
+
     @PostMapping
     public Demand saveDemand(@Valid @RequestBody DemandRequest demandRequest) {
         String demandName = demandRequest.name;
@@ -42,6 +47,8 @@ public class DemandController {
     public Demand updateDemand(@PathVariable Long id, @Valid @RequestBody Demand demand) {
         return demandService.updateDemand(id, demand.getName());
     }
+
+
 
     @PostMapping("/link_to_category")
     public void linkDemandToCategory(@Valid @RequestBody DemandCategoryRequest request) {
