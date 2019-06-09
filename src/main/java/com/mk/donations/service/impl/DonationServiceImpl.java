@@ -1,9 +1,6 @@
 package com.mk.donations.service.impl;
 
-import com.mk.donations.model.Demand;
-import com.mk.donations.model.Donation;
-import com.mk.donations.model.Donor;
-import com.mk.donations.model.Organization;
+import com.mk.donations.model.*;
 import com.mk.donations.model.exception.DonationRangeOutOfBoundException;
 import com.mk.donations.model.exception.EntityNotFoundException;
 import com.mk.donations.model.exception.PendingDonationsLimitExceeded;
@@ -16,6 +13,10 @@ import java.util.List;
 
 @Service
 public class DonationServiceImpl implements DonationsService {
+
+    private static final String STATUS_PENDING = "Pending";
+    private static final String STATUS_SUCCESSFUL = "Successful";
+    private static final String STATUS_DECLINED = "Declined";
 
     private final DonorRepository donorRepository;
     private final OrganizationRepository organizationRepository;
@@ -44,22 +45,37 @@ public class DonationServiceImpl implements DonationsService {
 
         return demandPerOrganizationRepository.findByDemand_IdAndOrganizationId(demandId, organizationId)
                 .map((demandPerOrganization) -> {
-                    validateDonationQuantity(demandPerOrganization.getQuantity(), quantity);
-                    String status = "Pending";
-                    Donation donation = new Donation(quantity, status, organization, donor, demand);
-                    donor.setNumberOfPendingDonations(donor.getNumberOfPendingDonations()+1);
-                    return donationRepository.save(donation);
+                   return donationRepository.findByOrganization_IdAndDemand_IdAndDonorId(organizationId, demandId, donorId)
+                            .map((donation) -> {
+                                validateDonationQuantity(demandPerOrganization.getQuantity(),donation.getQuantity() + quantity);
+                                donation.setQuantity(donation.getQuantity()+quantity);
+                                return donationRepository.save(donation);
+                            })
+                            .orElseGet(() -> {
+                                validateDonationQuantity(demandPerOrganization.getQuantity(), quantity);
+                                Donation newDonation = new Donation(quantity, STATUS_PENDING, organization, donor, demand);
+                                donor.setNumberOfPendingDonations(donor.getNumberOfPendingDonations()+1);
+                                return donationRepository.save(newDonation);
+                            });
                 })
                 .orElseThrow(() -> new EntityNotFoundException("барањето не е пронајдено."));
-
     }
 
     @Override
+    @Transactional
     public void acceptDonation(Long donationId) {
-
+        donationRepository.findById(donationId)
+                .ifPresent((donation) -> {
+                    donation.setStatus(STATUS_SUCCESSFUL);
+                    Donor donor = donation.getDonor();
+                    donor.setNumberOfPendingDonations(donor.getNumberOfPendingDonations()-1);
+                    donorRepository.save(donor);
+                    donationRepository.save(donation);
+                });
     }
 
     @Override
+    @Transactional
     public void declineDonation(Long donationId) {
 
     }
@@ -77,6 +93,7 @@ public class DonationServiceImpl implements DonationsService {
     }
 
     @Override
+    @Transactional
     public void removeDonation(Long donationId) {
 
     }
