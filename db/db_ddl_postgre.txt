@@ -46,7 +46,7 @@ CREATE TABLE "organization_category" (
 
 CREATE TABLE "organization" (
 	"id" BIGSERIAL PRIMARY KEY,
-	"name" varchar(30) UNIQUE NOT NULL,
+	"name" varchar(100) UNIQUE NOT NULL,
 	"phone" varchar(15) UNIQUE NOT NULL,
 	"email" varchar UNIQUE NOT NULL,
 	"password" varchar NOT NULL,
@@ -173,3 +173,43 @@ VALUES
     (47,'Ваучер за фитнес',1,14),
     (48,'Клима уред',1,15),
     (49,'Ваучер за академија за програмирање',1,15);
+
+INSERT INTO "organization"
+("id","name","phone","email","password","category")
+VALUES
+(1,'Државна болница','078923123','drzavna.bolnica@hotmail.com','Password1!',2),
+(2,'Градска болница','078823123','gradska.bolnica@hotmail.com','Password1!',2),
+(3,'Воена болница','078926123','voena.bolnica@hotmail.com','Password1!',2),
+(4,'ОУ Кочо Рацин','078934123','koco.racin@hotmail.com','Password1!',1),
+(5,'ОУ Ѓорѓија Пулевски','078925523','gorgija.pulevski@hotmail.com','Password1!',1),
+(6,'СУГС Јосип Броз Тито','0789231222','jbt@hotmail.com','Password1!',1),
+(7,'ФИНКИ','0789299922','finki@hotmail.com','Password1!',1),
+(8,'Министерство за култура','078923196','ministerstvo.kultura@hotmail.com','Password1!',3),
+(9,'Министерство за внатрешни работи','078555123','mvr@hotmail.com','Password1!',3),
+(10,'Дом за деца без родители','078944423','dom.deca@hotmail.com','Password1!',3),
+(11,'Црвен крст на РМ','078944365','crven.krst@hotmail.com','Password1!',3);
+
+INSERT INTO "organization_demand"
+("id","organization","demand","quantity")
+VALUES
+(1,1,27,2),
+(2,1,28,10),
+(3,2,27,5),
+(4,2,28,3),
+(5,3,27,20),
+(6,4,37,20),
+(7,4,38,10),
+(8,5,44,1),
+(9,5,40,30),
+(10,6,38,50),
+(11,6,44,1),
+(12,7,15,20),
+(13,7,17,10),
+(14,7,18,40),
+(15,8,15,10),
+(16,8,1,1),
+(17,10,41,30),
+(18,10,29,20),
+(19,10,30,20),
+(20,11,5,40),
+(21,11,6,60);
