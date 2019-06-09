@@ -27,11 +27,6 @@ import java.io.IOException;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
-    }
-
     @Configuration
     @Order(1)
     public static class AdminSecurity extends WebSecurityConfigurerAdapter {

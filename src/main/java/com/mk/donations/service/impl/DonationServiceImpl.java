@@ -132,8 +132,8 @@ public class DonationServiceImpl implements DonationsService {
                 .filter(donation -> currentDateTime.compareTo(donation.getValidUntil()) >= 0)
                 .forEach((donation) -> {
                     Donor donor = donation.getDonor();
-                    donor.setNumberOfPendingDonations(donor.getNumberOfPendingDonations()-1);
-                    donor.setFailedConsecutiveDonations(donor.getFailedConsecutiveDonations()+1);
+                    donor.setNumberOfPendingDonations(donor.getNumberOfPendingDonations() - 1);
+                    donor.setFailedConsecutiveDonations(donor.getFailedConsecutiveDonations() + 1);
                     donorRepository.save(donor);
                     donationRepository.delete(donation);
                 });
@@ -166,7 +166,7 @@ public class DonationServiceImpl implements DonationsService {
     }
 
     public void checkDonorFailedDonationsLimit(Donor donor) {
-        if(donor.getFailedConsecutiveDonations() >= 5)
+        if (donor.getFailedConsecutiveDonations() >= 5)
             throw new FailedDonationsLimitExceeded("повеќе не можете да донирате бидејќи имавте 5 неуспешни обиди !");
     }
 }

@@ -12,6 +12,7 @@ import com.mk.donations.service.DonationsService;
 import com.mk.donations.service.OrganizationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,11 @@ public class OrganizationController {
     public OrganizationController(OrganizationService organizationService, DonationsService donationsService) {
         this.organizationService = organizationService;
         this.donationsService = donationsService;
+    }
+
+    @GetMapping("/loggedOrganization")
+    public Organization getLoggedOrganization(Authentication authentication) {
+        return (Organization) authentication.getPrincipal();
     }
 
     @GetMapping

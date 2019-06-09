@@ -9,6 +9,7 @@ import com.mk.donations.service.DonationsService;
 import com.mk.donations.service.DonorService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,6 +25,11 @@ public class DonorController {
     public DonorController(DonorService donorService, DonationsService donationService) {
         this.donorService = donorService;
         this.donationService = donationService;
+    }
+
+    @GetMapping("/loggedDonor")
+    public Donor getLoggedOrganization(Authentication authentication) {
+        return (Donor) authentication.getPrincipal();
     }
 
     @GetMapping
