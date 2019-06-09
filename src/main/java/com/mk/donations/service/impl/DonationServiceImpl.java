@@ -45,16 +45,16 @@ public class DonationServiceImpl implements DonationsService {
 
         return demandPerOrganizationRepository.findByDemand_IdAndOrganizationId(demandId, organizationId)
                 .map((demandPerOrganization) -> {
-                   return donationRepository.findByOrganization_IdAndDemand_IdAndDonorId(organizationId, demandId, donorId)
+                    return donationRepository.findByOrganization_IdAndDemand_IdAndDonorId(organizationId, demandId, donorId)
                             .map((donation) -> {
-                                validateDonationQuantity(demandPerOrganization.getQuantity(),donation.getQuantity() + quantity);
-                                donation.setQuantity(donation.getQuantity()+quantity);
+                                validateDonationQuantity(demandPerOrganization.getQuantity(), donation.getQuantity() + quantity);
+                                donation.setQuantity(donation.getQuantity() + quantity);
                                 return donationRepository.save(donation);
                             })
                             .orElseGet(() -> {
                                 validateDonationQuantity(demandPerOrganization.getQuantity(), quantity);
                                 Donation newDonation = new Donation(quantity, STATUS_PENDING, organization, donor, demand);
-                                donor.setNumberOfPendingDonations(donor.getNumberOfPendingDonations()+1);
+                                donor.setNumberOfPendingDonations(donor.getNumberOfPendingDonations() + 1);
                                 return donationRepository.save(newDonation);
                             });
                 })
@@ -68,7 +68,7 @@ public class DonationServiceImpl implements DonationsService {
                 .ifPresent((donation) -> {
                     donation.setStatus(STATUS_SUCCESSFUL);
                     Donor donor = donation.getDonor();
-                    donor.setNumberOfPendingDonations(donor.getNumberOfPendingDonations()-1);
+                    donor.setNumberOfPendingDonations(donor.getNumberOfPendingDonations() - 1);
                     donorRepository.save(donor);
                     donationRepository.save(donation);
                 });
@@ -83,13 +83,13 @@ public class DonationServiceImpl implements DonationsService {
     @Override
     public List<Donation> getPendingDonationsForOrganization(Long organizationId) {
         String status = "Pending";
-        return donationRepository.findByOrganization_IdAndStatus(organizationId,status);
+        return donationRepository.findByOrganization_IdAndStatus(organizationId, status);
     }
 
     @Override
     public List<Donation> getSuccessfulDonationsForOrganization(Long organizationId) {
         String status = "Success";
-        return donationRepository.findByOrganization_IdAndStatus(organizationId,status);
+        return donationRepository.findByOrganization_IdAndStatus(organizationId, status);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class DonationServiceImpl implements DonationsService {
     }
 
     public void checkDonorPendingDonationsLimit(Donor donor) {
-        if(donor.getNumberOfPendingDonations() > 10)
+        if (donor.getNumberOfPendingDonations() > 10)
             throw new PendingDonationsLimitExceeded("не може истовремено да имате повеќе од 10 барања за донации");
     }
 }
