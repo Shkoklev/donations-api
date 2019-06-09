@@ -66,9 +66,20 @@ public class DonationServiceImpl implements DonationsService {
     public void acceptDonation(Long donationId) {
         donationRepository.findById(donationId)
                 .ifPresent((donation) -> {
+                    if(!donation.getStatus().equals(STATUS_PENDING))
+                        return;
+
+                    Long demandId = donation.getDemand().getId();
+                    Long organizationId = donation.getOrganization().getId();
+                    demandPerOrganizationRepository.findByDemand_IdAndOrganizationId(demandId,organizationId)
+                            .map((demandPerOrganization) -> {
+                                demandPerOrganization.setQuantity(demandPerOrganization.getQuantity()-donation.getQuantity());
+                                return demandPerOrganizationRepository.save(demandPerOrganization);
+                            });
                     donation.setStatus(STATUS_SUCCESSFUL);
                     Donor donor = donation.getDonor();
                     donor.setNumberOfPendingDonations(donor.getNumberOfPendingDonations() - 1);
+
                     donorRepository.save(donor);
                     donationRepository.save(donation);
                 });
@@ -77,19 +88,28 @@ public class DonationServiceImpl implements DonationsService {
     @Override
     @Transactional
     public void declineDonation(Long donationId) {
+        donationRepository.findById(donationId)
+                .ifPresent((donation) -> {
+                    if(!donation.getStatus().equals(STATUS_PENDING))
+                        return;
 
+                    Donor donor = donation.getDonor();
+                    donor.setNumberOfPendingDonations(donor.getNumberOfPendingDonations()-1);
+                    donorRepository.save(donor);
+
+                    donation.setStatus(STATUS_DECLINED);
+                    donationRepository.save(donation);
+                });
     }
 
     @Override
     public List<Donation> getPendingDonationsForOrganization(Long organizationId) {
-        String status = "Pending";
-        return donationRepository.findByOrganization_IdAndStatus(organizationId, status);
+        return donationRepository.findByOrganization_IdAndStatus(organizationId, STATUS_PENDING);
     }
 
     @Override
     public List<Donation> getSuccessfulDonationsForOrganization(Long organizationId) {
-        String status = "Success";
-        return donationRepository.findByOrganization_IdAndStatus(organizationId, status);
+        return donationRepository.findByOrganization_IdAndStatus(organizationId, STATUS_SUCCESSFUL);
     }
 
     @Override

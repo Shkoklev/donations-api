@@ -1,5 +1,6 @@
 package com.mk.donations.api;
 
+import com.mk.donations.model.Donation;
 import com.mk.donations.model.Organization;
 import com.mk.donations.model.dto.OrganizationDemand;
 import com.mk.donations.model.exception.ParameterMissingException;
@@ -7,6 +8,7 @@ import com.mk.donations.model.request.AddOrganizationRequest;
 import com.mk.donations.model.request.OrganizationDemandRequest;
 import com.mk.donations.model.request.EditOrganizationRequest;
 import com.mk.donations.model.request.QuantityRequest;
+import com.mk.donations.service.DonationsService;
 import com.mk.donations.service.OrganizationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,9 +24,11 @@ import java.util.List;
 public class OrganizationController {
 
     private final OrganizationService organizationService;
+    private final DonationsService donationsService;
 
-    public OrganizationController(OrganizationService organizationService) {
+    public OrganizationController(OrganizationService organizationService, DonationsService donationsService) {
         this.organizationService = organizationService;
+        this.donationsService = donationsService;
     }
 
     @GetMapping
@@ -88,6 +92,21 @@ public class OrganizationController {
     @DeleteMapping("/{organizationId}")
     public void deleteOrganization(@PathVariable Long organizationId) {
         this.organizationService.deleteOrganization(organizationId);
+    }
+
+    @GetMapping("/{organizationId}/accept_donation/{donationId}")
+    public void acceptDonation(@PathVariable Long donationId) {
+        this.donationsService.acceptDonation(donationId);
+    }
+
+    @GetMapping("/{organizationId}/successful_donations")
+    public List<Donation> getSuccessfulDonations(@PathVariable Long organizationId) {
+        return donationsService.getSuccessfulDonationsForOrganization(organizationId);
+    }
+
+    @GetMapping("/{organizationId}/pending_donations")
+    public List<Donation> getPendingDonations(@PathVariable Long organizationId) {
+        return donationsService.getPendingDonationsForOrganization(organizationId);
     }
 
     public void checkForEmptyRequest(EditOrganizationRequest request) {

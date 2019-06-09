@@ -1,8 +1,11 @@
 package com.mk.donations.api;
 
+import com.mk.donations.model.Donation;
 import com.mk.donations.model.Donor;
 import com.mk.donations.model.exception.ParameterMissingException;
 import com.mk.donations.model.request.EditDonorRequest;
+import com.mk.donations.model.request.QuantityRequest;
+import com.mk.donations.service.DonationsService;
 import com.mk.donations.service.DonorService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,9 +19,11 @@ import javax.validation.Valid;
 public class DonorController {
 
     private final DonorService donorService;
+    private final DonationsService donationService;
 
-    public DonorController(DonorService donorService) {
+    public DonorController(DonorService donorService, DonationsService donationService) {
         this.donorService = donorService;
+        this.donationService = donationService;
     }
 
     @GetMapping
@@ -58,5 +63,10 @@ public class DonorController {
                 && (request.phone == null || request.phone.isEmpty()) && (request.firstName == null || request.firstName.isEmpty())
          && (request.lastName == null || request.lastName.isEmpty()) && (request.pictureUrl == null || request.pictureUrl.isEmpty()))
             throw new ParameterMissingException("Внесете барем едно поле. ");
+    }
+
+    @PostMapping("/{donorId}/donate_to_organization/{organizationId}/for_demand/{demandId}")
+    public Donation donate(@PathVariable Long donorId, @PathVariable Long organizationId, @PathVariable Long demandId, @Valid @RequestBody QuantityRequest quantityRequest) {
+        return donationService.donate(donorId, organizationId, demandId, quantityRequest.quantity);
     }
 }
