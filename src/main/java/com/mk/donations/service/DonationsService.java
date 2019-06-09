@@ -16,7 +16,9 @@ public interface DonationsService {
 
     List<Donation> getSuccessfulDonationsForOrganization(Long organizationId);
 
-    void removeDonation(Long donationId);
+    List<Donation> getDeclinedDonationsForOrganization(Long organizationId);
+
+    void removePendingDonations();
 
 
 }

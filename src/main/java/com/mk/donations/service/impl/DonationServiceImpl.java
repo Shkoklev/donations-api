@@ -3,12 +3,15 @@ package com.mk.donations.service.impl;
 import com.mk.donations.model.*;
 import com.mk.donations.model.exception.DonationRangeOutOfBoundException;
 import com.mk.donations.model.exception.EntityNotFoundException;
+import com.mk.donations.model.exception.FailedDonationsLimitExceeded;
 import com.mk.donations.model.exception.PendingDonationsLimitExceeded;
 import com.mk.donations.repository.*;
 import com.mk.donations.service.DonationsService;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -41,6 +44,7 @@ public class DonationServiceImpl implements DonationsService {
         Demand demand = getDemandIfExists(demandId);
         Donor donor = getDonorIfExists(donorId);
 
+        checkDonorFailedDonationsLimit(donor);
         checkDonorPendingDonationsLimit(donor);
 
         return demandPerOrganizationRepository.findByDemand_IdAndOrganizationId(demandId, organizationId)
@@ -66,14 +70,14 @@ public class DonationServiceImpl implements DonationsService {
     public void acceptDonation(Long donationId) {
         donationRepository.findById(donationId)
                 .ifPresent((donation) -> {
-                    if(!donation.getStatus().equals(STATUS_PENDING))
+                    if (!donation.getStatus().equals(STATUS_PENDING))
                         return;
 
                     Long demandId = donation.getDemand().getId();
                     Long organizationId = donation.getOrganization().getId();
-                    demandPerOrganizationRepository.findByDemand_IdAndOrganizationId(demandId,organizationId)
+                    demandPerOrganizationRepository.findByDemand_IdAndOrganizationId(demandId, organizationId)
                             .map((demandPerOrganization) -> {
-                                demandPerOrganization.setQuantity(demandPerOrganization.getQuantity()-donation.getQuantity());
+                                demandPerOrganization.setQuantity(demandPerOrganization.getQuantity() - donation.getQuantity());
                                 return demandPerOrganizationRepository.save(demandPerOrganization);
                             });
                     donation.setStatus(STATUS_SUCCESSFUL);
@@ -90,11 +94,11 @@ public class DonationServiceImpl implements DonationsService {
     public void declineDonation(Long donationId) {
         donationRepository.findById(donationId)
                 .ifPresent((donation) -> {
-                    if(!donation.getStatus().equals(STATUS_PENDING))
+                    if (!donation.getStatus().equals(STATUS_PENDING))
                         return;
 
                     Donor donor = donation.getDonor();
-                    donor.setNumberOfPendingDonations(donor.getNumberOfPendingDonations()-1);
+                    donor.setNumberOfPendingDonations(donor.getNumberOfPendingDonations() - 1);
                     donorRepository.save(donor);
 
                     donation.setStatus(STATUS_DECLINED);
@@ -113,8 +117,26 @@ public class DonationServiceImpl implements DonationsService {
     }
 
     @Override
+    public List<Donation> getDeclinedDonationsForOrganization(Long organizationId) {
+        return donationRepository.findByOrganization_IdAndStatus(organizationId, STATUS_DECLINED);
+    }
+
+    @Override
     @Transactional
-    public void removeDonation(Long donationId) {
+    @Scheduled(cron = "0 22 * * * *")
+    public void removePendingDonations() {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        donationRepository.findByStatus(STATUS_PENDING)
+                .stream()
+                .filter(donation -> currentDateTime.compareTo(donation.getValidUntil()) >= 0)
+                .forEach((donation) -> {
+                    Donor donor = donation.getDonor();
+                    donor.setNumberOfPendingDonations(donor.getNumberOfPendingDonations()-1);
+                    donor.setFailedConsecutiveDonations(donor.getFailedConsecutiveDonations()+1);
+                    donorRepository.save(donor);
+                    donationRepository.delete(donation);
+                });
 
     }
 
@@ -141,5 +163,10 @@ public class DonationServiceImpl implements DonationsService {
     public void checkDonorPendingDonationsLimit(Donor donor) {
         if (donor.getNumberOfPendingDonations() > 10)
             throw new PendingDonationsLimitExceeded("не може истовремено да имате повеќе од 10 барања за донации");
+    }
+
+    public void checkDonorFailedDonationsLimit(Donor donor) {
+        if(donor.getFailedConsecutiveDonations() >= 5)
+            throw new FailedDonationsLimitExceeded("повеќе не можете да донирате бидејќи имавте 5 неуспешни обиди !");
     }
 }

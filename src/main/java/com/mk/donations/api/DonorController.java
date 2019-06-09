@@ -61,7 +61,7 @@ public class DonorController {
     private void checkForEmptyRequest(EditDonorRequest request) {
         if ((request.email == null || request.email.isEmpty()) && (request.password == null || request.password.isEmpty())
                 && (request.phone == null || request.phone.isEmpty()) && (request.firstName == null || request.firstName.isEmpty())
-         && (request.lastName == null || request.lastName.isEmpty()) && (request.pictureUrl == null || request.pictureUrl.isEmpty()))
+                && (request.lastName == null || request.lastName.isEmpty()) && (request.pictureUrl == null || request.pictureUrl.isEmpty()))
             throw new ParameterMissingException("Внесете барем едно поле. ");
     }
 

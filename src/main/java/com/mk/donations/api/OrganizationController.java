@@ -99,6 +99,11 @@ public class OrganizationController {
         this.donationsService.acceptDonation(donationId);
     }
 
+    @GetMapping("/{organizationId}/decline_donation/{donationId}")
+    public void declineDonation(@PathVariable Long donationId) {
+        this.donationsService.declineDonation(donationId);
+    }
+
     @GetMapping("/{organizationId}/successful_donations")
     public List<Donation> getSuccessfulDonations(@PathVariable Long organizationId) {
         return donationsService.getSuccessfulDonationsForOrganization(organizationId);
@@ -107,6 +112,11 @@ public class OrganizationController {
     @GetMapping("/{organizationId}/pending_donations")
     public List<Donation> getPendingDonations(@PathVariable Long organizationId) {
         return donationsService.getPendingDonationsForOrganization(organizationId);
+    }
+
+    @GetMapping("/{organizationId}/declined_donations")
+    public List<Donation> getDeclinedDonations(@PathVariable Long organizationId) {
+        return donationsService.getDeclinedDonationsForOrganization(organizationId);
     }
 
     public void checkForEmptyRequest(EditOrganizationRequest request) {

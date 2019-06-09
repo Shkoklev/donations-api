@@ -13,4 +13,6 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
     List<Donation> findByOrganization_IdAndStatus(Long organizationId, String status);
 
     Optional<Donation> findByOrganization_IdAndDemand_IdAndDonorId(Long organizationId, Long demandId, Long donorId);
+
+    List<Donation> findByStatus(String status);
 }
