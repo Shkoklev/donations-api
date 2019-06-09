@@ -1,9 +1,8 @@
 package com.mk.donations.model;
 
-import com.mk.donations.repository.converters.QuantityConverter;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.Month;
 
 @Entity
 @Table(name = "donation")
@@ -17,10 +16,7 @@ public class Donation {
             generator = "donation_id_seq")
     private Long id;
 
-    @Convert(converter = QuantityConverter.class)
-    private Quantity quantity;
-
-    private int points;
+    private Double quantity;
 
     private String status;
 
@@ -42,14 +38,13 @@ public class Donation {
     public Donation() {
     }
 
-    public Donation(Quantity quantity, String status, Organization organization, Donor donor, Demand demand, LocalDateTime validUntil) {
+    public Donation(Double quantity, String status, Organization organization, Donor donor, Demand demand) {
         this.quantity = quantity;
-        this.points = 0;
         this.status = status;
         this.organization = organization;
         this.donor = donor;
         this.demand = demand;
-        this.validUntil = validUntil;
+        this.validUntil = LocalDateTime.now().plusMonths(1);
     }
 
     public Long getId() {
@@ -60,20 +55,12 @@ public class Donation {
         this.id = id;
     }
 
-    public int getPoints() {
-        return points;
-    }
-
-    public Quantity getQuantity() {
+    public Double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Quantity quantity) {
+    public void setQuantity(Double quantity) {
         this.quantity = quantity;
-    }
-
-    public void setPoints(int points) {
-        this.points = points;
     }
 
     public String getStatus() {

@@ -8,7 +8,7 @@ public interface DemandService {
 
     List<Demand> getAllDemands();
 
-    Demand saveDemand(Demand demand);
+    Demand saveDemand(String name, String category, String unitName);
 
     void deleteDemandById(Long id);
 

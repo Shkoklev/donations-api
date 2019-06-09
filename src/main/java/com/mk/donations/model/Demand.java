@@ -26,11 +26,25 @@ public class Demand {
     @JoinColumn(name = "category")
     private DemandCategory category;
 
+    @ManyToOne
+    @JoinColumn(name = "unit")
+    private Unit unit;
+
+    public Unit getUnit() {
+        return unit;
+    }
+
+    public void setUnit(Unit unit) {
+        this.unit = unit;
+    }
+
     public Demand() {
     }
 
-    public Demand(String name) {
+    public Demand(String name, DemandCategory demandCategory, Unit unit) {
         this.name = name;
+        this.category = demandCategory;
+        this.unit = unit;
     }
 
     public Long getId() {

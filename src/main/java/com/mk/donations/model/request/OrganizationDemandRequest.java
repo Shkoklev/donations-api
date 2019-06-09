@@ -12,13 +12,6 @@ public class OrganizationDemandRequest {
     public String demandName;
 
     @NotNull(message = "Не смее да е празно !")
-    @NotEmpty(message = "Не смее да е празно!")
-    public String demandCategoryName;
-
-    @NotNull(message = "Не смее да е празно !")
     public Double quantity;
 
-    @NotNull(message = "Не смее да е празно !")
-    @NotEmpty(message = "Не смее да е празно!")
-    public String unitName;
 }

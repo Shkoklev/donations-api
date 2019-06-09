@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@CrossOrigin({"*", "localhost:3000"})
 @RestController
 @RequestMapping("/admin")
 public class AdminController {

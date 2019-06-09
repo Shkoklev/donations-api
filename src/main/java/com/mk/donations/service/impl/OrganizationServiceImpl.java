@@ -12,6 +12,8 @@ import com.mk.donations.repository.OrganizationCategoryRepository;
 import com.mk.donations.repository.OrganizationRepository;
 import com.mk.donations.service.OrganizationService;
 import com.mk.donations.service.util.DemandQuantityValidator;
+import com.mk.donations.service.util.EmailChecker;
+import com.mk.donations.service.util.PhoneChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -34,17 +36,21 @@ public class OrganizationServiceImpl implements OrganizationService {
     private final DemandPerOrganizationRepository demandPerOrganizationRepository;
     private final OrganizationCategoryRepository organizationCategoryRepository;
     private final DemandRepository demandRepository;
+    private final EmailChecker emailChecker;
+    private final PhoneChecker phoneChecker;
 
     private final PasswordEncoder passwordEncoder;
 
     public OrganizationServiceImpl(OrganizationRepository organizationRepository, DemandPerOrganizationRepository demandPerOrganizationRepository,
                                    OrganizationCategoryRepository organizationCategoryRepository, DemandRepository demandRepository,
-                                   PasswordEncoder passwordEncoder) {
+                                   PasswordEncoder passwordEncoder, EmailChecker emailChecker, PhoneChecker phoneChecker) {
         this.organizationRepository = organizationRepository;
         this.demandPerOrganizationRepository = demandPerOrganizationRepository;
         this.organizationCategoryRepository = organizationCategoryRepository;
         this.demandRepository = demandRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailChecker = emailChecker;
+        this.phoneChecker = phoneChecker;
     }
 
     @Override
@@ -84,7 +90,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public void addDemandToOrganization(String demandName, String demandCategoryName, Long organizationId, Quantity quantity) {
+    public void addDemandToOrganization(String demandName, Long organizationId, Double quantity) {
         if (!DemandQuantityValidator.isDemandQuantityValid(quantity))
             throw new InvalidQuantityException("Погрешно внесена количина");
         if (!demandRepository.existsByName(demandName))
@@ -93,12 +99,10 @@ public class OrganizationServiceImpl implements OrganizationService {
             throw new EntityNotFoundException("Организација со id: " + organizationId + " не постои");
 
         Demand demand = demandRepository.findByName(demandName).get();
-        if(!demand.getCategory().getName().equals(demandCategoryName))
-            throw new DemandCategoryMismatchException("ова барање не влегува во оваа категорија");
 
         demandPerOrganizationRepository.findByDemand_IdAndOrganizationId(demand.getId(), organizationId)
                 .map((demandPerOrganization) -> {
-                    demandPerOrganization.setQuantity(demandPerOrganization.getQuantity().add(quantity));
+                    demandPerOrganization.setQuantity(demandPerOrganization.getQuantity() + quantity);
                     return demandPerOrganizationRepository.save(demandPerOrganization);
                 }).orElseGet(() -> {
             Organization organization = organizationRepository.findById(organizationId).get();
@@ -108,7 +112,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public void changeExistingDemandQuantity(Long organizationId, Long demandId, Quantity quantity) {
+    public void changeExistingDemandQuantity(Long organizationId, Long demandId, Double quantity) {
         if (!DemandQuantityValidator.isDemandQuantityValid(quantity))
             throw new InvalidQuantityException("Погрешно внесена количина");
         demandPerOrganizationRepository.findByDemand_IdAndOrganizationId(demandId,organizationId)
@@ -131,6 +135,8 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public Organization updateOrganization(Long id, String email, String password, String phone) {
+        emailChecker.checkDuplicateEmail(email);
+        phoneChecker.checkDuplicatePhone(phone);
         return organizationRepository.findById(id)
                 .map((organization) -> {
                     if (email != null && !email.isEmpty())
@@ -168,14 +174,8 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     public void checkOrganizationExistence(String email, String phone, String name) {
-        organizationRepository.findByEmail(email)
-                .ifPresent((o) -> {
-                    throw new EntityAlreadyExistsException("Ваков е-mail веќе постои. ");
-                });
-        organizationRepository.findByPhone(phone)
-                .ifPresent((o) -> {
-                    throw new EntityAlreadyExistsException("Овој телефонски број е веќе регистриран. ");
-                });
+        emailChecker.checkDuplicateEmail(email);
+        phoneChecker.checkDuplicatePhone(phone);
         organizationRepository.findByName(name)
                 .ifPresent((o) -> {
                     throw new EntityAlreadyExistsException("Името е зафатено. ");

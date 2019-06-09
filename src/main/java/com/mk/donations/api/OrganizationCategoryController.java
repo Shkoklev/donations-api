@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@CrossOrigin({"*", "localhost:3000"})
 @RestController
 @RequestMapping("/organization_categories")
 public class OrganizationCategoryController {

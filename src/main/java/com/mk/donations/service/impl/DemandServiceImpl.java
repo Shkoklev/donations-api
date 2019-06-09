@@ -1,10 +1,13 @@
 package com.mk.donations.service.impl;
 
 import com.mk.donations.model.Demand;
+import com.mk.donations.model.DemandCategory;
+import com.mk.donations.model.Unit;
 import com.mk.donations.model.exception.EntityAlreadyExistsException;
 import com.mk.donations.model.exception.EntityNotFoundException;
 import com.mk.donations.repository.DemandCategoryRepository;
 import com.mk.donations.repository.DemandRepository;
+import com.mk.donations.repository.UnitRepository;
 import com.mk.donations.service.DemandService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +22,13 @@ public class DemandServiceImpl implements DemandService {
 
     private final DemandRepository demandRepository;
     private final DemandCategoryRepository demandCategoryRepository;
+    private final UnitRepository unitRepository;
 
-    public DemandServiceImpl(DemandRepository demandRepository, DemandCategoryRepository demandCategoryRepository) {
+    public DemandServiceImpl(DemandRepository demandRepository, DemandCategoryRepository demandCategoryRepository,
+                             UnitRepository unitRepository) {
         this.demandRepository = demandRepository;
         this.demandCategoryRepository = demandCategoryRepository;
+        this.unitRepository = unitRepository;
     }
 
     @Override
@@ -31,11 +37,19 @@ public class DemandServiceImpl implements DemandService {
     }
 
     @Override
-    public Demand saveDemand(Demand demand) {
-        demandRepository.findByName(demand.getName())
+    public Demand saveDemand(String name, String category, String unitName) {
+        demandRepository.findByName(name)
                 .ifPresent((d) -> {
-                    throw new EntityAlreadyExistsException(demand.getName() + " веќе постои.");
+                    throw new EntityAlreadyExistsException(name + " веќе постои.");
                 });
+        DemandCategory demandCategory = demandCategoryRepository.findByName(category)
+                .orElseThrow(() -> new EntityNotFoundException(category + " не постои"));
+        Unit unit = unitRepository.findByName(unitName)
+                .orElseGet(() -> {
+                    Unit unitToSave = new Unit(unitName);
+                    return unitRepository.save(unitToSave);
+                });
+        Demand demand = new Demand(name, demandCategory, unit);
         return demandRepository.save(demand);
     }
 

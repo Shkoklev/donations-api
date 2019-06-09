@@ -12,5 +12,11 @@ public interface DonorService extends UserDetailsService {
 
     UserDetails loadUserByUsername(String email);
 
+    Donor getDonorById(Long id);
 
+    Donor addDonor(Donor donor);
+
+    Donor updateDonor(Long id, String firstName, String lastName, String email, String password, String phone, String pictureUrl);
+
+    void deleteDonor(Long donorId);
 }

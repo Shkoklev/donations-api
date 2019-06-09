@@ -5,6 +5,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -21,18 +22,31 @@ public class Donor implements UserDetails {
     private Long id;
 
     @Column(name = "first_name", nullable = false)
+    @NotNull(message = "Името не смее да е празно !")
+    @NotEmpty(message = "Името не смее да е празно !")
     private String firstName;
 
     @Column(name = "last_name", nullable = false)
+    @NotNull(message = "Презимето не смее да е празно !")
+    @NotEmpty(message = "Презимето не смее да е празно !")
     private String lastName;
 
     @Column(unique = true, nullable = false)
+    @NotNull(message = "Внесете Е-mail !")
+    @NotEmpty(message = "Внесете Е-mail !")
+    @Email(message = "Невалиден формат на адреса")
     private String email;
 
     @Column(unique = true, nullable = false)
+    @NotNull(message = "Внесете пасворд !")
+    @NotEmpty(message = "Внесете пасворд !")
+    @Size(min = 8, max = 100, message = "Пасвордот мора да содржи барем 8 карактери")
     private String password;
 
     @Column(unique = true, nullable = false)
+    @NotNull(message = "Телефонскиот број не смее да е празен !")
+    @NotEmpty(message = "Телефонскиот број не смее да е празен !")
+    @Pattern(message = "мора да содржи само бројки", regexp = "^[0-9]+$")
     private String phone;
 
     @Column(name = "picture_url")
@@ -40,19 +54,23 @@ public class Donor implements UserDetails {
 
     private int points;
 
+    @Column(name = "failed_consecutive_donations")
     private int failedConsecutiveDonations;
+
+    @Column(name = "number_of_current_pending_donations")
+    private int numberOfCurrentPendingDonations;
 
     public Donor() {
     }
 
-    public Donor(String firstName, String lastName, String email, String phone, String pictureUrl) {
+    public Donor(String firstName, String lastName, String email, String phone) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
-        this.pictureUrl = pictureUrl;
         this.points = 0;
         this.failedConsecutiveDonations = 0;
+        this.numberOfCurrentPendingDonations = 0;
     }
 
     public Long getId() {
@@ -125,6 +143,14 @@ public class Donor implements UserDetails {
 
     public void setFailedConsecutiveDonations(int failedConsecutiveDonations) {
         this.failedConsecutiveDonations = failedConsecutiveDonations;
+    }
+
+    public int getNumberOfPendingDonations() {
+        return numberOfCurrentPendingDonations;
+    }
+
+    public void setNumberOfPendingDonations(int numberOfPendingDonations) {
+        this.numberOfCurrentPendingDonations = numberOfPendingDonations;
     }
 
     @Override

@@ -23,7 +23,13 @@ CREATE TABLE "donor" (
 	"phone" varchar(15) UNIQUE NOT NULL,
 	"picture_url" varchar,
 	"points" INT,
-	"failed_consecutive_donations" SMALLINT
+	"failed_consecutive_donations" SMALLINT,
+	"number_of_current_pending_donations" SMALLINT
+);
+
+CREATE TABLE "unit" (
+	"id" BIGSERIAL PRIMARY KEY,
+	"name" varchar(30) UNIQUE NOT NULL
 );
 
 CREATE TABLE "administrator" (
@@ -40,6 +46,9 @@ CREATE TABLE "demand_category" (
 CREATE TABLE "demand" (
 	"id" BIGSERIAL PRIMARY KEY,
 	"name" varchar(50) UNIQUE NOT NULL,
+	"unit" BIGINT REFERENCES "unit"(id)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE,
 	"category" BIGINT REFERENCES "demand_category"(id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
@@ -85,17 +94,51 @@ CREATE TABLE "donation" (
 	"demand" BIGINT REFERENCES "demand"(id)
 		ON DELETE SET NULL
 		ON UPDATE CASCADE,
-	"points" INT,
 	"status" varchar(20),
 	"quantity" varchar NOT NULL,
 	"duration" TIMESTAMP WITHOUT TIME ZONE
 );
 
+-- INSERTING MOCK DATA INTO TABLES
 
+INSERT INTO "unit"
+("id","name")
+VALUES
+(1,'количина'),
+(2,'литри'),
+(3,'килограми'),
+(4,'волумен'),
+(5,'површина'),
+(6,'денари');
 
+INSERT INTO "organization_category"
+("id","name")
+VALUES
+(1,'Образование'),
+(2,'Болници'),
+(3,'Институции');
 
-
-
-
-
+INSERT INTO "demand_category"
+("id","name")
+VALUES
+(1,'Недвижности'),
+(2,'Дом и Градина'),
+(3,'Мода и Облека'),
+(4,'Мобилни телефони и додатоци'),
+(5,'Компјутери'),
+(6,'ТВ, Видео Фото и Мултимедија'),
+(7,'Музички инструменти и опрема'),
+(8,'Часовници и Накит'),
+(9,'Детски производи'),
+(10,'Здравје и убавина'),
+(11,'CD, DVD, Филмови'),
+(12,'Книги и литература'),
+(13,'Канцелариски и Школски прибор'),
+(14,'Спортска опрема и активности'),
+(15,'Антиквитети, Уметност'),
+(16,'Бизнис и дејности, Машини алати'),
+(17,'Храна и готвење'),
+(18,'Продавници, Трговија'),
+(19,'Туризам, Билети'),
+(20,'Останато');
 

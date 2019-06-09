@@ -1,14 +1,12 @@
 package com.mk.donations.api;
 
-import com.mk.donations.model.DemandPerOrganization;
 import com.mk.donations.model.Organization;
-import com.mk.donations.model.Quantity;
-import com.mk.donations.model.Unit;
 import com.mk.donations.model.dto.OrganizationDemand;
 import com.mk.donations.model.exception.ParameterMissingException;
 import com.mk.donations.model.request.AddOrganizationRequest;
 import com.mk.donations.model.request.OrganizationDemandRequest;
 import com.mk.donations.model.request.EditOrganizationRequest;
+import com.mk.donations.model.request.QuantityRequest;
 import com.mk.donations.service.OrganizationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@CrossOrigin({"*", "localhost:3000"})
 @RestController
 @RequestMapping("/organizations")
 public class OrganizationController {
@@ -55,25 +54,23 @@ public class OrganizationController {
         String email = addOrganizationRequest.email;
         String password = addOrganizationRequest.password;
         String category = addOrganizationRequest.category;
-        return organizationService.addOrganization(name,phone,email,password,category);
+        return organizationService.addOrganization(name, phone, email, password, category);
     }
 
     @PostMapping("/{organizationId}/add_demand")
     public void addDemandToOrganization(@Valid @RequestBody OrganizationDemandRequest organizationDemandRequest, @PathVariable Long organizationId) {
-        //        if (!(SecurityContextHolder.getContext().getAuthentication()
-        //                instanceof AnonymousAuthenticationToken)) {
+        //  Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+        //              your code here
         //        }
-        Unit unit = Unit.valueOf(organizationDemandRequest.unitName);
-        Quantity quantity = new Quantity(organizationDemandRequest.quantity, unit);
         organizationService.addDemandToOrganization(organizationDemandRequest.demandName,
-                organizationDemandRequest.demandCategoryName,
                 organizationId,
-                quantity);
+                organizationDemandRequest.quantity);
     }
 
     @PutMapping("/{organizationId}/change_demand_quantity/{demandId}")
-    public void changeDemandQuantity(@PathVariable Long organizationId, @PathVariable Long demandId, @Valid @RequestBody Quantity quantity) {
-        organizationService.changeExistingDemandQuantity(organizationId, demandId, quantity);
+    public void changeDemandQuantity(@PathVariable Long organizationId, @PathVariable Long demandId, @Valid @RequestBody QuantityRequest quantityRequest) {
+        organizationService.changeExistingDemandQuantity(organizationId, demandId, quantityRequest.quantity);
     }
 
     @DeleteMapping("/{organizationId}/delete_demand/{demandId}")

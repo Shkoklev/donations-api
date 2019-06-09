@@ -1,9 +1,6 @@
 package com.mk.donations.service;
 
-import com.mk.donations.model.Demand;
-import com.mk.donations.model.DemandPerOrganization;
 import com.mk.donations.model.Organization;
-import com.mk.donations.model.Quantity;
 import com.mk.donations.model.dto.OrganizationDemand;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,9 +21,9 @@ public interface OrganizationService extends UserDetailsService {
 
     List<OrganizationDemand> getDemandsForOrganization(Long id);
 
-    void addDemandToOrganization(String demandName, String demandCategoryName, Long organizationId, Quantity quantity);
+    void addDemandToOrganization(String demandName, Long organizationId, Double quantity);
 
-    void changeExistingDemandQuantity(Long organizationId, Long demandId, Quantity quantity);
+    void changeExistingDemandQuantity(Long organizationId, Long demandId, Double quantity);
 
     void deleteDemandFromOrganization(Long demandId, Long organizationId);
 

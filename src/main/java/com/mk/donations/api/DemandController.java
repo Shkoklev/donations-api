@@ -2,12 +2,14 @@ package com.mk.donations.api;
 
 import com.mk.donations.model.Demand;
 import com.mk.donations.model.request.DemandCategoryRequest;
+import com.mk.donations.model.request.DemandRequest;
 import com.mk.donations.service.DemandService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
+@CrossOrigin({"*", "localhost:3000"})
 @RestController
 @RequestMapping("/demands")
 public class DemandController {
@@ -24,8 +26,11 @@ public class DemandController {
     }
 
     @PostMapping
-    public Demand saveDemand(@Valid @RequestBody Demand demand) {
-        return demandService.saveDemand(demand);
+    public Demand saveDemand(@Valid @RequestBody DemandRequest demandRequest) {
+        String demandName = demandRequest.name;
+        String demandCategory = demandRequest.category;
+        String demandUnitName = demandRequest.unitName;
+        return demandService.saveDemand(demandName, demandCategory, demandUnitName);
     }
 
     @DeleteMapping("/{id}")
@@ -34,8 +39,8 @@ public class DemandController {
     }
 
     @PutMapping("/{id}")
-    public Demand updateDemand(@PathVariable Long id,@Valid @RequestBody Demand demand) {
-        return demandService.updateDemand(id,demand.getName());
+    public Demand updateDemand(@PathVariable Long id, @Valid @RequestBody Demand demand) {
+        return demandService.updateDemand(id, demand.getName());
     }
 
     @PostMapping("/link_to_category")
