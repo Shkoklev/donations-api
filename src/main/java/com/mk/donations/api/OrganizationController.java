@@ -57,8 +57,8 @@ public class OrganizationController {
         return organizationService.getDemandsForOrganization(organizationId);
     }
 
-    @PostMapping
-    public Organization addOrganization(@Valid @RequestBody AddOrganizationRequest addOrganizationRequest) {
+    @PostMapping("/register")
+    public Organization register(@Valid @RequestBody AddOrganizationRequest addOrganizationRequest) {
         String name = addOrganizationRequest.name;
         String phone = addOrganizationRequest.phone;
         String email = addOrganizationRequest.email;

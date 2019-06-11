@@ -16,6 +16,7 @@ public class Organization implements UserDetails {
     @Id
     @SequenceGenerator(name = "organization_id_seq",
             sequenceName = "organization_id_seq",
+            initialValue=205,
             allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "organization_id_seq")

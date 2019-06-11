@@ -23,20 +23,20 @@ public class DemandCategoryController {
         return demandCategoryService.getAllCategories();
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteDemandCategoryById(@PathVariable Long id) {
-        demandCategoryService.deleteDemandCategoryById(id);
-    }
-
-    @PostMapping
-    public DemandCategory saveOrganizationCategory(@Valid @RequestBody DemandCategory demandCategory) {
-        return demandCategoryService.saveDemandCategory(demandCategory.getName());
-    }
-
-    @PutMapping("/{id}")
-    public DemandCategory updateOrganizationCategory(@PathVariable Long id, @Valid @RequestBody DemandCategory demandCategory) {
-        return demandCategoryService.updateOrganizationCategory(id, demandCategory.getName());
-    }
+//    @DeleteMapping("/{id}")
+//    public void deleteDemandCategoryById(@PathVariable Long id) {
+//        demandCategoryService.deleteDemandCategoryById(id);
+//    }
+//
+//    @PostMapping
+//    public DemandCategory saveOrganizationCategory(@Valid @RequestBody DemandCategory demandCategory) {
+//        return demandCategoryService.saveDemandCategory(demandCategory.getName());
+//    }
+//
+//    @PutMapping("/{id}")
+//    public DemandCategory updateOrganizationCategory(@PathVariable Long id, @Valid @RequestBody DemandCategory demandCategory) {
+//        return demandCategoryService.updateOrganizationCategory(id, demandCategory.getName());
+//    }
 
 
 }

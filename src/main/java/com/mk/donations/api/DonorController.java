@@ -10,6 +10,7 @@ import com.mk.donations.service.DonorService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,7 +29,7 @@ public class DonorController {
     }
 
     @GetMapping("/loggedDonor")
-    public Donor getLoggedOrganization(Authentication authentication) {
+    public Donor getLoggedDonor(Authentication authentication) {
         return (Donor) authentication.getPrincipal();
     }
 
@@ -42,37 +43,42 @@ public class DonorController {
         return donorService.getDonorById(donorId);
     }
 
-    @PostMapping
-    public Donor addDonor(@Valid @RequestBody Donor donor) {
+    @PostMapping("/register")
+    public Donor register(@Valid @RequestBody Donor donor) {
         return donorService.addDonor(donor);
     }
 
-    @PutMapping("/{donorId}")
-    public Donor updateDonor(@Valid @RequestBody EditDonorRequest editDonorRequest, @PathVariable Long donorId) {
-        checkForEmptyRequest(editDonorRequest);
-        String firstName = editDonorRequest.firstName;
-        String lastName = editDonorRequest.lastName;
-        String email = editDonorRequest.email;
-        String password = editDonorRequest.password;
-        String phone = editDonorRequest.phone;
-        String pictureUrl = editDonorRequest.pictureUrl;
-        return this.donorService.updateDonor(donorId, firstName, lastName, email, password, phone, pictureUrl);
-    }
+//    @PutMapping("/{donorId}")
+//    public Donor updateDonor(@Valid @RequestBody EditDonorRequest editDonorRequest, @PathVariable Long donorId) {
+//        checkForEmptyRequest(editDonorRequest);
+//        String firstName = editDonorRequest.firstName;
+//        String lastName = editDonorRequest.lastName;
+//        String email = editDonorRequest.email;
+//        String password = editDonorRequest.password;
+//        String phone = editDonorRequest.phone;
+//        String pictureUrl = editDonorRequest.pictureUrl;
+//        return this.donorService.updateDonor(donorId, firstName, lastName, email, password, phone, pictureUrl);
+//    }
+//
+//    @DeleteMapping("/{donorId}")
+//    public void deleteDonor(@PathVariable Long donorId) {
+//        this.donorService.deleteDonor(donorId);
+//    }
 
-    @DeleteMapping("/{donorId}")
-    public void deleteDonor(@PathVariable Long donorId) {
-        this.donorService.deleteDonor(donorId);
-    }
+//    private void checkForEmptyRequest(EditDonorRequest request) {
+//        if ((request.email == null || request.email.isEmpty()) && (request.password == null || request.password.isEmpty())
+//                && (request.phone == null || request.phone.isEmpty()) && (request.firstName == null || request.firstName.isEmpty())
+//                && (request.lastName == null || request.lastName.isEmpty()) && (request.pictureUrl == null || request.pictureUrl.isEmpty()))
+//            throw new ParameterMissingException("Внесете барем едно поле. ");
+//    }
 
-    private void checkForEmptyRequest(EditDonorRequest request) {
-        if ((request.email == null || request.email.isEmpty()) && (request.password == null || request.password.isEmpty())
-                && (request.phone == null || request.phone.isEmpty()) && (request.firstName == null || request.firstName.isEmpty())
-                && (request.lastName == null || request.lastName.isEmpty()) && (request.pictureUrl == null || request.pictureUrl.isEmpty()))
-            throw new ParameterMissingException("Внесете барем едно поле. ");
-    }
 
     @PostMapping("/{donorId}/donate_to_organization/{organizationId}/for_demand/{demandId}")
     public Donation donate(@PathVariable Long donorId, @PathVariable Long organizationId, @PathVariable Long demandId, @Valid @RequestBody QuantityRequest quantityRequest) {
         return donationService.donate(donorId, organizationId, demandId, quantityRequest.quantity);
+    }
+
+    private Donor getActiveDonor() {
+        return (Donor) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     }
 }

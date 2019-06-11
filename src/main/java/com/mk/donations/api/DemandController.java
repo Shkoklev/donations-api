@@ -30,28 +30,26 @@ public class DemandController {
         return demandService.getAllDemandsByCategoryId(categoryId);
     }
 
-    @PostMapping
-    public Demand saveDemand(@Valid @RequestBody DemandRequest demandRequest) {
-        String demandName = demandRequest.name;
-        String demandCategory = demandRequest.category;
-        String demandUnitName = demandRequest.unitName;
-        return demandService.saveDemand(demandName, demandCategory, demandUnitName);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteDemandById(@PathVariable Long id) {
-        demandService.deleteDemandById(id);
-    }
-
-    @PutMapping("/{id}")
-    public Demand updateDemand(@PathVariable Long id, @Valid @RequestBody Demand demand) {
-        return demandService.updateDemand(id, demand.getName());
-    }
-
-
-
-    @PostMapping("/link_to_category")
-    public void linkDemandToCategory(@Valid @RequestBody DemandCategoryRequest request) {
-        demandService.linkDemandToCategory(request.demandName, request.demandCategoryName);
-    }
+//    @PostMapping
+//    public Demand saveDemand(@Valid @RequestBody DemandRequest demandRequest) {
+//        String demandName = demandRequest.name;
+//        String demandCategory = demandRequest.category;
+//        String demandUnitName = demandRequest.unitName;
+//        return demandService.saveDemand(demandName, demandCategory, demandUnitName);
+//    }
+//
+//    @DeleteMapping("/{id}")
+//    public void deleteDemandById(@PathVariable Long id) {
+//        demandService.deleteDemandById(id);
+//    }
+//
+//    @PutMapping("/{id}")
+//    public Demand updateDemand(@PathVariable Long id, @Valid @RequestBody Demand demand) {
+//        return demandService.updateDemand(id, demand.getName());
+//    }
+//
+//    @PostMapping("/link_to_category")
+//    public void linkDemandToCategory(@Valid @RequestBody DemandCategoryRequest request) {
+//        demandService.linkDemandToCategory(request.demandName, request.demandCategoryName);
+//    }
 }
