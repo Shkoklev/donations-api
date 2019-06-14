@@ -6,10 +6,8 @@ import com.mk.donations.service.impl.OrganizationServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -57,8 +55,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable()
-                    .httpBasic().disable()
+            http.cors();
+            http.csrf().disable();
+            http.httpBasic().disable()
                     .exceptionHandling()
                     .authenticationEntryPoint(authenticationEntryPoint);
 
@@ -117,8 +116,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable()
-                    .httpBasic().disable()
+            http.cors();
+            http.csrf().disable();
+            http.httpBasic().disable()
                     .exceptionHandling()
                     .authenticationEntryPoint(authenticationEntryPoint);
 
@@ -183,8 +183,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable()
-                    .httpBasic().disable()
+            http.cors();
+            http.csrf().disable();
+            http.httpBasic().disable()
                     .exceptionHandling()
                     .authenticationEntryPoint(authenticationEntryPoint);
 
@@ -195,11 +196,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .antMatchers("/organizations/loggedOrganization")
                     .hasAuthority("ORGANIZATION")
                     .antMatchers("/organizations/{\\d+}/add_demand")
-                    .hasAnyAuthority("ORGANIZATION","ADMIN")
+                    .hasAnyAuthority("ORGANIZATION", "ADMIN")
                     .antMatchers("/organizations/{\\d+}/change_demand_quantity")
-                    .hasAnyAuthority("ORGANIZATION","ADMIN")
+                    .hasAnyAuthority("ORGANIZATION", "ADMIN")
                     .antMatchers("/organizations/{\\d+}/delete_demand")
-                    .hasAnyAuthority("ORGANIZATION","ADMIN")
+                    .hasAnyAuthority("ORGANIZATION", "ADMIN")
                     .antMatchers("/organizations/{\\d+}/accept_donation/**")
                     .hasAnyAuthority("ORGANIZATION")
                     .antMatchers("/organizations/{\\d+}/decline_donation/**")

@@ -32,21 +32,21 @@ public class Donor implements UserDetails {
     private String lastName;
 
     @Column(unique = true, nullable = false)
+    @Email(message = "Невалиден формат на адреса")
     @NotNull(message = "Внесете Е-mail !")
     @NotEmpty(message = "Внесете Е-mail !")
-    @Email(message = "Невалиден формат на адреса")
     private String email;
 
     @Column(unique = true, nullable = false)
+    @Size(min = 8, max = 100, message = "Пасвордот мора да содржи барем 8 карактери")
     @NotNull(message = "Внесете пасворд !")
     @NotEmpty(message = "Внесете пасворд !")
-    @Size(min = 8, max = 100, message = "Пасвордот мора да содржи барем 8 карактери")
     private String password;
 
     @Column(unique = true, nullable = false)
+    @Pattern(message = "Телефонскиот број мора да содржи само бројки", regexp = "^[0-9]+$")
     @NotNull(message = "Телефонскиот број не смее да е празен !")
     @NotEmpty(message = "Телефонскиот број не смее да е празен !")
-    @Pattern(message = "мора да содржи само бројки", regexp = "^[0-9]+$")
     private String phone;
 
     @Column(name = "picture_url")
