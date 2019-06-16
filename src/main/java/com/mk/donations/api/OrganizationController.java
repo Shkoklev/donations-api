@@ -34,7 +34,8 @@ public class OrganizationController {
 
     @GetMapping("/loggedOrganization")
     public Organization getLoggedOrganization(Authentication authentication) {
-        return (Organization) authentication.getPrincipal();
+        Long id = Long.valueOf(authentication.getDetails().toString());
+        return organizationService.getOrganizationById(id);
     }
 
     @GetMapping

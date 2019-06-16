@@ -12,5 +12,7 @@ public interface AdminService extends UserDetailsService {
 
     UserDetails loadUserByUsername(String email);
 
+    Admin getById(Long id);
+
     void deleteAdmin(Admin admin);
 }

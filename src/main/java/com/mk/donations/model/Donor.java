@@ -182,4 +182,20 @@ public class Donor implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Donor{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", phone='" + phone + '\'' +
+                ", pictureUrl='" + pictureUrl + '\'' +
+                ", points=" + points +
+                ", failedConsecutiveDonations=" + failedConsecutiveDonations +
+                ", numberOfCurrentPendingDonations=" + numberOfCurrentPendingDonations +
+                '}';
+    }
 }

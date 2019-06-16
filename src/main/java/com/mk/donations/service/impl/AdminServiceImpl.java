@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 public class AdminServiceImpl implements AdminService {
 
@@ -31,6 +33,11 @@ public class AdminServiceImpl implements AdminService {
         Admin admin = new Admin(email);
         admin.setPassword(passwordEncoder.encode(password));
         return adminRepository.save(admin);
+    }
+
+    public Admin getById(Long id) {
+        return this.adminRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("не постои."));
     }
 
     @Override

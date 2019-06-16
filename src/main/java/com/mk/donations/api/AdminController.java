@@ -40,7 +40,8 @@ public class AdminController {
 
     @GetMapping("/loggedAdmin")
     public Admin getLoggedAdmin(Authentication authentication) {
-        return (Admin) authentication.getPrincipal();
+        Long id = Long.valueOf(authentication.getDetails().toString());
+        return adminService.getById(id);
     }
 
     @DeleteMapping("/delete")

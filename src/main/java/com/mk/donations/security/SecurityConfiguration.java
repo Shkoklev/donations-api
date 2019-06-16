@@ -1,5 +1,8 @@
 package com.mk.donations.security;
 
+import com.mk.donations.repository.AdminRepository;
+import com.mk.donations.repository.DonorRepository;
+import com.mk.donations.repository.OrganizationRepository;
 import com.mk.donations.service.impl.AdminServiceImpl;
 import com.mk.donations.service.impl.DonorServiceImpl;
 import com.mk.donations.service.impl.OrganizationServiceImpl;
@@ -11,6 +14,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,14 +42,25 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         private final AuthenticationEntryPoint authenticationEntryPoint;
         private final AdminServiceImpl adminService;
         private final PasswordEncoder passwordEncoder;
+        private final JwtTokenProvider jwtTokenProvider;
+        private final AdminRepository adminRepository;
 
-        public AdminSecurity(AuthenticationSuccessHandler successHandler, AuthenticationFailureHandler failureHandler, LogoutSuccessHandler logoutSuccessHandler, AuthenticationEntryPoint authenticationEntryPoint, AdminServiceImpl adminService, PasswordEncoder passwordEncoder) {
+        public AdminSecurity(AuthenticationSuccessHandler successHandler,
+                             AuthenticationFailureHandler failureHandler,
+                             LogoutSuccessHandler logoutSuccessHandler,
+                             AuthenticationEntryPoint authenticationEntryPoint,
+                             AdminServiceImpl adminService,
+                             PasswordEncoder passwordEncoder,
+                             JwtTokenProvider jwtTokenProvider,
+                             AdminRepository adminRepository) {
             this.successHandler = successHandler;
             this.failureHandler = failureHandler;
             this.logoutSuccessHandler = logoutSuccessHandler;
             this.authenticationEntryPoint = authenticationEntryPoint;
             this.adminService = adminService;
             this.passwordEncoder = passwordEncoder;
+            this.jwtTokenProvider = jwtTokenProvider;
+            this.adminRepository = adminRepository;
         }
 
         @Override
@@ -83,6 +98,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .deleteCookies("JSESSIONID")
                     .permitAll()
                     .and()
+                    .addFilter(new JwtAdminUsernamePasswordAuthenticationFilter("/admin/login",jwtTokenProvider, adminRepository, authenticationManager()))
+                    .addFilter(new JwtAuthorizationFilter(authenticationManager(),jwtTokenProvider,adminRepository))
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
                     .headers()
                     .frameOptions()
                     .disable();
@@ -99,14 +118,25 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         private final AuthenticationEntryPoint authenticationEntryPoint;
         private final DonorServiceImpl donorService;
         private final PasswordEncoder passwordEncoder;
+        private final JwtTokenProvider jwtTokenProvider;
+        private final DonorRepository donorRepository;
 
-        public DonorSecurity(AuthenticationSuccessHandler successHandler, AuthenticationFailureHandler failureHandler, LogoutSuccessHandler logoutSuccessHandler, AuthenticationEntryPoint authenticationEntryPoint, DonorServiceImpl donorService, PasswordEncoder passwordEncoder) {
+        public DonorSecurity(AuthenticationSuccessHandler successHandler,
+                             AuthenticationFailureHandler failureHandler,
+                             LogoutSuccessHandler logoutSuccessHandler,
+                             AuthenticationEntryPoint authenticationEntryPoint,
+                             DonorServiceImpl donorService,
+                             PasswordEncoder passwordEncoder,
+                             JwtTokenProvider jwtTokenProvider,
+                             DonorRepository donorRepository) {
             this.successHandler = successHandler;
             this.failureHandler = failureHandler;
             this.logoutSuccessHandler = logoutSuccessHandler;
             this.authenticationEntryPoint = authenticationEntryPoint;
             this.donorService = donorService;
             this.passwordEncoder = passwordEncoder;
+            this.jwtTokenProvider = jwtTokenProvider;
+            this.donorRepository = donorRepository;
         }
 
         @Override
@@ -150,6 +180,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .deleteCookies("JSESSIONID")
                     .permitAll()
                     .and()
+                    .addFilter(new JwtDonorUsernamePasswordAuthenticationFilter("/donors/login",jwtTokenProvider, donorRepository, authenticationManager()))
+                    .addFilter(new JwtAuthorizationFilter(authenticationManager(),jwtTokenProvider,donorRepository))
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
                     .headers()
                     .frameOptions()
                     .disable();
@@ -166,14 +200,25 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         private final AuthenticationEntryPoint authenticationEntryPoint;
         private final OrganizationServiceImpl organizationService;
         private final PasswordEncoder passwordEncoder;
+        private final OrganizationRepository organizationRepository;
+        private final JwtTokenProvider jwtTokenProvider;
 
-        public OrganizationSecurity(AuthenticationSuccessHandler successHandler, AuthenticationFailureHandler failureHandler, LogoutSuccessHandler logoutSuccessHandler, AuthenticationEntryPoint authenticationEntryPoint, OrganizationServiceImpl organizationService, PasswordEncoder passwordEncoder) {
+        public OrganizationSecurity(AuthenticationSuccessHandler successHandler,
+                                    AuthenticationFailureHandler failureHandler,
+                                    LogoutSuccessHandler logoutSuccessHandler,
+                                    AuthenticationEntryPoint authenticationEntryPoint,
+                                    OrganizationServiceImpl organizationService,
+                                    PasswordEncoder passwordEncoder,
+                                    JwtTokenProvider jwtTokenProvider,
+                                    OrganizationRepository organizationRepository) {
             this.successHandler = successHandler;
             this.failureHandler = failureHandler;
             this.logoutSuccessHandler = logoutSuccessHandler;
             this.authenticationEntryPoint = authenticationEntryPoint;
             this.organizationService = organizationService;
             this.passwordEncoder = passwordEncoder;
+            this.organizationRepository = organizationRepository;
+            this.jwtTokenProvider = jwtTokenProvider;
         }
 
         @Override
@@ -202,15 +247,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .antMatchers("/organizations/{\\d+}/delete_demand")
                     .hasAnyAuthority("ORGANIZATION", "ADMIN")
                     .antMatchers("/organizations/{\\d+}/accept_donation/**")
-                    .hasAnyAuthority("ORGANIZATION")
+                    .hasAuthority("ORGANIZATION")
                     .antMatchers("/organizations/{\\d+}/decline_donation/**")
-                    .hasAnyAuthority("ORGANIZATION")
+                    .hasAuthority("ORGANIZATION")
                     .antMatchers("/organizations/{\\d+}/successful_donations")
-                    .hasAnyAuthority("ORGANIZATION")
+                    .hasAuthority("ORGANIZATION")
                     .antMatchers("/organizations/{\\d+}/pending_donations")
-                    .hasAnyAuthority("ORGANIZATION")
+                    .hasAuthority("ORGANIZATION")
                     .antMatchers("/organizations/{\\d+}/declined_donations")
-                    .hasAnyAuthority("ORGANIZATION")
+                    .hasAuthority("ORGANIZATION")
                     .and()
                     .formLogin()
                     .loginProcessingUrl("/organizations/login")
@@ -225,6 +270,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .logoutSuccessHandler(logoutSuccessHandler)
                     .deleteCookies("JSESSIONID")
                     .permitAll()
+                    .and()
+                    .addFilter(new JwtOrganizationUsernamePasswordAuthenticationFilter("/organizations/login",jwtTokenProvider, organizationRepository, authenticationManager()))
+                    .addFilter(new JwtAuthorizationFilter(authenticationManager(),jwtTokenProvider,organizationRepository))
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
                     .headers()
                     .frameOptions()

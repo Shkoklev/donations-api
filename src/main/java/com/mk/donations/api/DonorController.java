@@ -30,7 +30,8 @@ public class DonorController {
 
     @GetMapping("/loggedDonor")
     public Donor getLoggedDonor(Authentication authentication) {
-        return (Donor) authentication.getPrincipal();
+        Long id = Long.valueOf(authentication.getDetails().toString());
+        return donorService.getDonorById(id);
     }
 
     @GetMapping
