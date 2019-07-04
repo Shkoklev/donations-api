@@ -59,6 +59,11 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
+    public List<Organization> getOrganizationsByQuery(String query) {
+        return organizationRepository.findByNameStartingWithIgnoreCase(query);
+    }
+
+    @Override
     public Page<Organization> getOrganizationsPageByCategory(Pageable pageable, Long categoryId) {
         return organizationCategoryRepository.findById(categoryId)
                 .map((category) -> {

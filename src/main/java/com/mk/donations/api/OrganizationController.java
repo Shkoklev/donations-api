@@ -38,6 +38,11 @@ public class OrganizationController {
         return organizationService.getOrganizationById(id);
     }
 
+    @GetMapping("/search")
+    public List<Organization> getOrganizations(@RequestParam(value = "query", required = false) String query) {
+        return organizationService.getOrganizationsByQuery(query);
+    }
+
     @GetMapping
     public Page<Organization> getOrganizations(Pageable pageable) {
         return organizationService.getOrganizationsPage(pageable);

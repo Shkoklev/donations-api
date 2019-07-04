@@ -73,6 +73,8 @@ public class JwtOrganizationUsernamePasswordAuthenticationFilter extends Usernam
         tokenClaims.put("userAuthorities", authority);
         String token = jwtUtil.generateToken(tokenClaims);
         res.addHeader(jwtUtil.getHeaderString(), jwtUtil.getTokenPrefix() + token);
+        res.setHeader("Access-Control-Expose-Headers", "Authorization, Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, " +
+                "Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
         ObjectMapper mapper = new ObjectMapper();
         res.getWriter().write(mapper.writeValueAsString(organization));
         LOGGER.info("Authentication successful for user {}", organization.getUsername());

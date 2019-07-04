@@ -33,5 +33,7 @@ public interface OrganizationService extends UserDetailsService {
 
     void deleteOrganization(Long id);
 
+    List<Organization> getOrganizationsByQuery(String query);
+
 
 }
