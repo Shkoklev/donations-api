@@ -1,8 +1,6 @@
 package com.mk.donations.api;
 
 import com.mk.donations.model.Demand;
-import com.mk.donations.model.request.DemandCategoryRequest;
-import com.mk.donations.model.request.DemandRequest;
 import com.mk.donations.service.DemandService;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +23,12 @@ public class DemandController {
         return demandService.getAllDemands();
     }
 
-    @GetMapping("/{categoryId}")
+    @GetMapping("/{demandId}")
+    public Demand getDemandById(@PathVariable Long demandId) {
+        return demandService.getDemandById(demandId);
+    }
+
+    @GetMapping("/by_category/{categoryId}")
     public List<Demand> getAllByCategoryId(@PathVariable Long categoryId) {
         return demandService.getAllDemandsByCategoryId(categoryId);
     }

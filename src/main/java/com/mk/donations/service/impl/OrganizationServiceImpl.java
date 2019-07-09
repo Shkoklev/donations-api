@@ -86,10 +86,10 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public Organization addOrganization(String name, String phone, String email, String password, String categoryName) {
-        checkOrganizationExistence(email,phone,name);
+        checkOrganizationExistence(email, phone, name);
         checkCategoryExistence(categoryName);
         OrganizationCategory organizationCategory = organizationCategoryRepository.findByName(categoryName).get();
-        Organization organization = new Organization(name,phone,email, organizationCategory);
+        Organization organization = new Organization(name, phone, email, organizationCategory);
         organization.setPassword(passwordEncoder.encode(password));
         return organizationRepository.save(organization);
     }
@@ -109,18 +109,19 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .map((demandPerOrganization) -> {
                     demandPerOrganization.setQuantity(demandPerOrganization.getQuantity() + quantity);
                     return demandPerOrganizationRepository.save(demandPerOrganization);
-                }).orElseGet(() -> {
-            Organization organization = organizationRepository.findById(organizationId).get();
-            DemandPerOrganization demandPerOrganization = new DemandPerOrganization(organization, demand, quantity);
-            return demandPerOrganizationRepository.save(demandPerOrganization);
-        });
+                })
+                .orElseGet(() -> {
+                    Organization organization = organizationRepository.findById(organizationId).get();
+                    DemandPerOrganization demandPerOrganization = new DemandPerOrganization(organization, demand, quantity);
+                    return demandPerOrganizationRepository.save(demandPerOrganization);
+                });
     }
 
     @Override
     public void changeExistingDemandQuantity(Long organizationId, Long demandId, Double quantity) {
         if (!DemandQuantityValidator.isDemandQuantityValid(quantity))
             throw new InvalidQuantityException("Погрешно внесена количина");
-        demandPerOrganizationRepository.findByDemand_IdAndOrganizationId(demandId,organizationId)
+        demandPerOrganizationRepository.findByDemand_IdAndOrganizationId(demandId, organizationId)
                 .map((demandPerOrganization) -> {
                     demandPerOrganization.setQuantity(quantity);
                     return demandPerOrganizationRepository.save(demandPerOrganization);
@@ -157,12 +158,12 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public List<OrganizationDemand> getDemandsForOrganization(Long id) {
-        if(!organizationRepository.existsById(id))
+        if (!organizationRepository.existsById(id))
             throw new EntityNotFoundException("Организацијата не постои");
         return demandPerOrganizationRepository.findByOrganization_Id(id)
                 .stream()
                 .map((demandPerOrganization) -> {
-                    OrganizationDemand organizationDemand = new OrganizationDemand(demandPerOrganization.getDemand(),demandPerOrganization.getQuantity());
+                    OrganizationDemand organizationDemand = new OrganizationDemand(demandPerOrganization.getDemand(), demandPerOrganization.getQuantity());
                     return organizationDemand;
                 })
                 .collect(Collectors.toList());

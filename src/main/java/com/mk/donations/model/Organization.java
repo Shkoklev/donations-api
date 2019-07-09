@@ -1,5 +1,6 @@
 package com.mk.donations.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,6 +44,7 @@ public class Organization implements UserDetails {
     @NotNull(message = "Внесете пасворд !")
     @NotEmpty(message = "Внесете пасворд !")
     @Size(min = 8, max = 100, message = "Пасвордот мора да содржи барем 8 карактери")
+    @JsonIgnore
     private String password;
 
     @ManyToOne

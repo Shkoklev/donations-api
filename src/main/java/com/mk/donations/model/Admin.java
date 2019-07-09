@@ -1,5 +1,6 @@
 package com.mk.donations.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,6 +35,7 @@ public class Admin implements UserDetails {
     @NotNull(message = "Пасвордот не смее да е празен !")
     @NotEmpty(message = "Пасвордот не смее да е празен !")
     @Size(min = 8, max = 100, message = "Пасвордот мора да содржи барем 8 карактери")
+    @JsonIgnore
     private String password;
 
     public Admin() {

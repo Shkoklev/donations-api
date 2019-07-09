@@ -12,6 +12,9 @@ import com.mk.donations.service.DonationsService;
 import com.mk.donations.service.OrganizationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -44,12 +47,12 @@ public class OrganizationController {
     }
 
     @GetMapping
-    public Page<Organization> getOrganizations(Pageable pageable) {
+    public Page<Organization> getOrganizations(@PageableDefault(value = 8) Pageable pageable) {
         return organizationService.getOrganizationsPage(pageable);
     }
 
     @GetMapping("/{categoryId}")
-    public Page<Organization> getOrganizationsPageByCategory(@PathVariable Long categoryId, Pageable pageable) {
+    public Page<Organization> getOrganizationsPageByCategory(@PathVariable Long categoryId, @PageableDefault(value = 8) Pageable pageable) {
         return organizationService.getOrganizationsPageByCategory(pageable, categoryId);
     }
 
@@ -74,14 +77,17 @@ public class OrganizationController {
     }
 
     @PostMapping("/{organizationId}/add_demand")
-    public void addDemandToOrganization(@Valid @RequestBody OrganizationDemandRequest organizationDemandRequest, @PathVariable Long organizationId) {
-        //  Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        //        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-        //              your code here
-        //        }
+    public ResponseEntity<Void> addDemandToOrganization(@Valid @RequestBody OrganizationDemandRequest organizationDemandRequest,
+                                                        Authentication authentication,
+                                                        @PathVariable Long organizationId) {
+        Long id = Long.valueOf(authentication.getDetails().toString());
+        if (id != organizationId) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         organizationService.addDemandToOrganization(organizationDemandRequest.demandName,
-                organizationId,
+                id,
                 organizationDemandRequest.quantity);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/{organizationId}/change_demand_quantity/{demandId}")
@@ -90,8 +96,13 @@ public class OrganizationController {
     }
 
     @DeleteMapping("/{organizationId}/delete_demand/{demandId}")
-    public void deleteDemandFromOrganization(@PathVariable Long organizationId, @PathVariable Long demandId) {
+    public ResponseEntity<Void> deleteDemandFromOrganization(Authentication authentication, @PathVariable Long organizationId, @PathVariable Long demandId) {
+        Long id = Long.valueOf(authentication.getDetails().toString());
+        if (id != organizationId) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         this.organizationService.deleteDemandFromOrganization(demandId, organizationId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/{organizationId}")
@@ -136,9 +147,4 @@ public class OrganizationController {
                 && (request.phone == null || request.phone.isEmpty()))
             throw new ParameterMissingException("Внесете барем едно поле. ");
     }
-
-    private Organization getActiveOrganization() {
-        return (Organization) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-    }
-
 }

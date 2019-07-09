@@ -10,6 +10,8 @@ public interface DemandService {
 
     List<Demand> getAllDemandsByCategoryId(Long categoryId);
 
+    Demand getDemandById(Long id);
+
     Demand saveDemand(String name, String category, String unitName);
 
     void deleteDemandById(Long id);

@@ -9,6 +9,8 @@ import com.mk.donations.service.DonationsService;
 import com.mk.donations.service.DonorService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -39,47 +41,48 @@ public class DonorController {
         return donorService.getDonorsPage(pageable);
     }
 
-    @GetMapping("/{donorId}")
-    public Donor getDonorById(@PathVariable Long donorId) {
-        return donorService.getDonorById(donorId);
-    }
+//    @GetMapping("/{donorId}")
+//    public Donor getDonorById(@PathVariable Long donorId) {
+//        return donorService.getDonorById(donorId);
+//    }
 
     @PostMapping("/register")
     public Donor register(@Valid @RequestBody Donor donor) {
         return donorService.addDonor(donor);
     }
 
-//    @PutMapping("/{donorId}")
-//    public Donor updateDonor(@Valid @RequestBody EditDonorRequest editDonorRequest, @PathVariable Long donorId) {
-//        checkForEmptyRequest(editDonorRequest);
-//        String firstName = editDonorRequest.firstName;
-//        String lastName = editDonorRequest.lastName;
-//        String email = editDonorRequest.email;
-//        String password = editDonorRequest.password;
-//        String phone = editDonorRequest.phone;
-//        String pictureUrl = editDonorRequest.pictureUrl;
-//        return this.donorService.updateDonor(donorId, firstName, lastName, email, password, phone, pictureUrl);
-//    }
-//
-//    @DeleteMapping("/{donorId}")
-//    public void deleteDonor(@PathVariable Long donorId) {
-//        this.donorService.deleteDonor(donorId);
-//    }
+    @PutMapping("/{donorId}")
+    public ResponseEntity<Donor> updateDonor(@Valid @RequestBody EditDonorRequest editDonorRequest, @PathVariable Long donorId, Authentication authentication) {
+        long id = Long.valueOf(authentication.getDetails().toString());
+        if(id != donorId) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        checkForEmptyRequest(editDonorRequest);
+        String firstName = editDonorRequest.firstName;
+        String lastName = editDonorRequest.lastName;
+        String email = editDonorRequest.email;
+        String password = editDonorRequest.password;
+        String phone = editDonorRequest.phone;
+        String pictureUrl = editDonorRequest.pictureUrl;
+        Donor donor = this.donorService.updateDonor(donorId, firstName, lastName, email, password, phone, pictureUrl);
+        return new ResponseEntity<>(donor, HttpStatus.OK);
+    }
 
-//    private void checkForEmptyRequest(EditDonorRequest request) {
-//        if ((request.email == null || request.email.isEmpty()) && (request.password == null || request.password.isEmpty())
-//                && (request.phone == null || request.phone.isEmpty()) && (request.firstName == null || request.firstName.isEmpty())
-//                && (request.lastName == null || request.lastName.isEmpty()) && (request.pictureUrl == null || request.pictureUrl.isEmpty()))
-//            throw new ParameterMissingException("Внесете барем едно поле. ");
-//    }
+    @DeleteMapping("/{donorId}")
+    public void deleteDonor(@PathVariable Long donorId) {
+        this.donorService.deleteDonor(donorId);
+    }
+
+    private void checkForEmptyRequest(EditDonorRequest request) {
+        if ((request.email == null || request.email.isEmpty()) && (request.password == null || request.password.isEmpty())
+                && (request.phone == null || request.phone.isEmpty()) && (request.firstName == null || request.firstName.isEmpty())
+                && (request.lastName == null || request.lastName.isEmpty()) && (request.pictureUrl == null || request.pictureUrl.isEmpty()))
+            throw new ParameterMissingException("Внесете барем едно поле. ");
+    }
 
 
     @PostMapping("/{donorId}/donate_to_organization/{organizationId}/for_demand/{demandId}")
     public Donation donate(@PathVariable Long donorId, @PathVariable Long organizationId, @PathVariable Long demandId, @Valid @RequestBody QuantityRequest quantityRequest) {
         return donationService.donate(donorId, organizationId, demandId, quantityRequest.quantity);
-    }
-
-    private Donor getActiveDonor() {
-        return (Donor) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     }
 }

@@ -32,6 +32,12 @@ public class DemandServiceImpl implements DemandService {
     }
 
     @Override
+    public Demand getDemandById(Long id) {
+        return this.demandRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Објект со id : " + id + " не постои"));
+    }
+
+    @Override
     public List<Demand> getAllDemands() {
         return demandRepository.findAll();
     }
