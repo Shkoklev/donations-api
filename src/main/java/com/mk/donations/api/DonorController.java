@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @CrossOrigin({"*", "localhost:3000"})
 @RestController
@@ -54,7 +55,7 @@ public class DonorController {
     @PutMapping("/{donorId}")
     public ResponseEntity<Donor> updateDonor(@Valid @RequestBody EditDonorRequest editDonorRequest, @PathVariable Long donorId, Authentication authentication) {
         long id = Long.valueOf(authentication.getDetails().toString());
-        if(id != donorId) {
+        if (id != donorId) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         checkForEmptyRequest(editDonorRequest);
@@ -82,7 +83,46 @@ public class DonorController {
 
 
     @PostMapping("/{donorId}/donate_to_organization/{organizationId}/for_demand/{demandId}")
-    public Donation donate(@PathVariable Long donorId, @PathVariable Long organizationId, @PathVariable Long demandId, @Valid @RequestBody QuantityRequest quantityRequest) {
-        return donationService.donate(donorId, organizationId, demandId, quantityRequest.quantity);
+    public ResponseEntity<Donation> donate(@PathVariable Long donorId,
+                                           @PathVariable Long organizationId,
+                                           @PathVariable Long demandId,
+                                           @Valid @RequestBody QuantityRequest quantityRequest,
+                                           Authentication authentication) {
+        long id = Long.valueOf(authentication.getDetails().toString());
+        if (id != donorId) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        Donation donation = donationService.donate(donorId, organizationId, demandId, quantityRequest.quantity);
+        return new ResponseEntity<>(donation, HttpStatus.OK);
+    }
+
+    @GetMapping("/{donorId}/successful_donations")
+    public ResponseEntity<List<Donation>> getSuccessfulDonations(@PathVariable Long donorId, Authentication authentication) {
+        long id = Long.valueOf(authentication.getDetails().toString());
+        if (id != donorId) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        List<Donation> donations = donationService.getSuccessfulDonationsForDonor(donorId);
+        return new ResponseEntity<>(donations, HttpStatus.OK);
+    }
+
+    @GetMapping("/{donorId}/pending_donations")
+    public ResponseEntity<List<Donation>> getPendingDonations(@PathVariable Long donorId, Authentication authentication) {
+        long id = Long.valueOf(authentication.getDetails().toString());
+        if (id != donorId) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        List<Donation> donations = donationService.getPendingDonationsForDonor(donorId);
+        return new ResponseEntity<>(donations, HttpStatus.OK);
+    }
+
+    @GetMapping("/{donorId}/declined_donations")
+    public ResponseEntity<List<Donation>> getDeclinedDonations(@PathVariable Long donorId, Authentication authentication) {
+        long id = Long.valueOf(authentication.getDetails().toString());
+        if (id != donorId) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        List<Donation> donations = donationService.getDeclinedDonationsForDonor(donorId);
+        return new ResponseEntity<>(donations, HttpStatus.OK);
     }
 }

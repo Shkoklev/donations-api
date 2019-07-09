@@ -1,12 +1,10 @@
 package com.mk.donations.service.impl;
 
 import com.mk.donations.model.*;
-import com.mk.donations.model.exception.DonationRangeOutOfBoundException;
-import com.mk.donations.model.exception.EntityNotFoundException;
-import com.mk.donations.model.exception.FailedDonationsLimitExceeded;
-import com.mk.donations.model.exception.PendingDonationsLimitExceeded;
+import com.mk.donations.model.exception.*;
 import com.mk.donations.repository.*;
 import com.mk.donations.service.DonationsService;
+import com.mk.donations.service.util.DemandQuantityValidator;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +38,8 @@ public class DonationServiceImpl implements DonationsService {
     @Override
     @Transactional
     public Donation donate(Long donorId, Long organizationId, Long demandId, Double quantity) {
+        if (!DemandQuantityValidator.isDemandQuantityValid(quantity))
+            throw new InvalidQuantityException("Погрешно внесена количина");
         Organization organization = getOrganizationIfExists(organizationId);
         Demand demand = getDemandIfExists(demandId);
         Donor donor = getDonorIfExists(donorId);
@@ -59,6 +59,7 @@ public class DonationServiceImpl implements DonationsService {
                                 validateDonationQuantity(demandPerOrganization.getQuantity(), quantity);
                                 Donation newDonation = new Donation(quantity, STATUS_PENDING, organization, donor, demand);
                                 donor.setNumberOfPendingDonations(donor.getNumberOfPendingDonations() + 1);
+                                donorRepository.save(donor);
                                 return donationRepository.save(newDonation);
                             });
                 })
@@ -119,6 +120,21 @@ public class DonationServiceImpl implements DonationsService {
     @Override
     public List<Donation> getDeclinedDonationsForOrganization(Long organizationId) {
         return donationRepository.findByOrganization_IdAndStatus(organizationId, STATUS_DECLINED);
+    }
+
+    @Override
+    public List<Donation> getPendingDonationsForDonor(Long donorId) {
+        return donationRepository.findByDonor_IdAndStatus(donorId, STATUS_PENDING);
+    }
+
+    @Override
+    public List<Donation> getSuccessfulDonationsForDonor(Long donorId) {
+        return donationRepository.findByDonor_IdAndStatus(donorId, STATUS_SUCCESSFUL);
+    }
+
+    @Override
+    public List<Donation> getDeclinedDonationsForDonor(Long donorId) {
+        return donationRepository.findByDonor_IdAndStatus(donorId, STATUS_DECLINED);
     }
 
     @Override

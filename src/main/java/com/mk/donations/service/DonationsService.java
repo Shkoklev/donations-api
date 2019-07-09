@@ -18,6 +18,12 @@ public interface DonationsService {
 
     List<Donation> getDeclinedDonationsForOrganization(Long organizationId);
 
+    List<Donation> getPendingDonationsForDonor(Long donorId);
+
+    List<Donation> getSuccessfulDonationsForDonor(Long donorId);
+
+    List<Donation> getDeclinedDonationsForDonor(Long donorId);
+
     void removePendingDonations();
 
 
