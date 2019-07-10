@@ -18,6 +18,7 @@ public class DonationServiceImpl implements DonationsService {
     private static final String STATUS_PENDING = "Pending";
     private static final String STATUS_SUCCESSFUL = "Successful";
     private static final String STATUS_DECLINED = "Declined";
+    private static final int POINTS_PER_DONATION = 10;
 
     private final DonorRepository donorRepository;
     private final OrganizationRepository organizationRepository;
@@ -68,6 +69,18 @@ public class DonationServiceImpl implements DonationsService {
 
     @Override
     @Transactional
+    public void deleteDonation(Long donorId, Long donationId) {
+        Donor donor = getDonorIfExists(donorId);
+        donationRepository.findById(donationId)
+                .ifPresent((donation) -> {
+                    donor.setNumberOfPendingDonations(donor.getNumberOfPendingDonations() - 1);
+                    donorRepository.save(donor);
+                    donationRepository.deleteById(donationId);
+                });
+    }
+
+    @Override
+    @Transactional
     public void acceptDonation(Long donationId) {
         donationRepository.findById(donationId)
                 .ifPresent((donation) -> {
@@ -84,7 +97,9 @@ public class DonationServiceImpl implements DonationsService {
                     donation.setStatus(STATUS_SUCCESSFUL);
                     Donor donor = donation.getDonor();
                     donor.setNumberOfPendingDonations(donor.getNumberOfPendingDonations() - 1);
+                    donor.setPoints(donor.getPoints() + POINTS_PER_DONATION);
 
+                    donation.setAcceptedOn(LocalDateTime.now());
                     donorRepository.save(donor);
                     donationRepository.save(donation);
                 });
@@ -109,32 +124,32 @@ public class DonationServiceImpl implements DonationsService {
 
     @Override
     public List<Donation> getPendingDonationsForOrganization(Long organizationId) {
-        return donationRepository.findByOrganization_IdAndStatus(organizationId, STATUS_PENDING);
+        return donationRepository.findAllByOrganization_IdAndStatus(organizationId, STATUS_PENDING);
     }
 
     @Override
     public List<Donation> getSuccessfulDonationsForOrganization(Long organizationId) {
-        return donationRepository.findByOrganization_IdAndStatus(organizationId, STATUS_SUCCESSFUL);
+        return donationRepository.findAllByOrganization_IdAndStatus(organizationId, STATUS_SUCCESSFUL);
     }
 
     @Override
     public List<Donation> getDeclinedDonationsForOrganization(Long organizationId) {
-        return donationRepository.findByOrganization_IdAndStatus(organizationId, STATUS_DECLINED);
+        return donationRepository.findAllByOrganization_IdAndStatus(organizationId, STATUS_DECLINED);
     }
 
     @Override
     public List<Donation> getPendingDonationsForDonor(Long donorId) {
-        return donationRepository.findByDonor_IdAndStatus(donorId, STATUS_PENDING);
+        return donationRepository.findAllByDonor_IdAndStatus(donorId, STATUS_PENDING);
     }
 
     @Override
     public List<Donation> getSuccessfulDonationsForDonor(Long donorId) {
-        return donationRepository.findByDonor_IdAndStatus(donorId, STATUS_SUCCESSFUL);
+        return donationRepository.findAllByDonor_IdAndStatus(donorId, STATUS_SUCCESSFUL);
     }
 
     @Override
     public List<Donation> getDeclinedDonationsForDonor(Long donorId) {
-        return donationRepository.findByDonor_IdAndStatus(donorId, STATUS_DECLINED);
+        return donationRepository.findAllByDonor_IdAndStatus(donorId, STATUS_DECLINED);
     }
 
     @Override
@@ -143,7 +158,7 @@ public class DonationServiceImpl implements DonationsService {
     public void removePendingDonations() {
         LocalDateTime currentDateTime = LocalDateTime.now();
 
-        donationRepository.findByStatus(STATUS_PENDING)
+        donationRepository.findAllByStatus(STATUS_PENDING)
                 .stream()
                 .filter(donation -> currentDateTime.compareTo(donation.getValidUntil()) >= 0)
                 .forEach((donation) -> {

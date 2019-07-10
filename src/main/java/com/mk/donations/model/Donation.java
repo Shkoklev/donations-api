@@ -35,6 +35,9 @@ public class Donation {
     @Column(name = "duration")
     private LocalDateTime validUntil;
 
+    @Column(name= "accepted_on")
+    private LocalDateTime acceptedOn;
+
     public Donation() {
     }
 
@@ -101,5 +104,13 @@ public class Donation {
 
     public void setValidUntil(LocalDateTime validUntil) {
         this.validUntil = validUntil;
+    }
+
+    public LocalDateTime getAcceptedOn() {
+        return acceptedOn;
+    }
+
+    public void setAcceptedOn(LocalDateTime acceptedOn) {
+        this.acceptedOn = acceptedOn;
     }
 }

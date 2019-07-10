@@ -118,28 +118,53 @@ public class OrganizationController {
     }
 
     @GetMapping("/{organizationId}/accept_donation/{donationId}")
-    public void acceptDonation(@PathVariable Long donationId) {
+    public ResponseEntity<Void> acceptDonation(@PathVariable Long organizationId, @PathVariable Long donationId, Authentication authentication) {
+        long id = Long.valueOf(authentication.getDetails().toString());
+        if (id != organizationId) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         this.donationsService.acceptDonation(donationId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/{organizationId}/decline_donation/{donationId}")
-    public void declineDonation(@PathVariable Long donationId) {
+    public ResponseEntity<Void> declineDonation(@PathVariable Long organizationId, @PathVariable Long donationId, Authentication authentication) {
+        long id = Long.valueOf(authentication.getDetails().toString());
+        if (id != organizationId) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         this.donationsService.declineDonation(donationId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/{organizationId}/successful_donations")
-    public List<Donation> getSuccessfulDonations(@PathVariable Long organizationId) {
-        return donationsService.getSuccessfulDonationsForOrganization(organizationId);
+    public ResponseEntity<List<Donation>> getSuccessfulDonations(@PathVariable Long organizationId, Authentication authentication) {
+        long id = Long.valueOf(authentication.getDetails().toString());
+        if (id != organizationId) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        List<Donation> donations = donationsService.getSuccessfulDonationsForOrganization(organizationId);
+        return new ResponseEntity<>(donations, HttpStatus.OK);
     }
 
     @GetMapping("/{organizationId}/pending_donations")
-    public List<Donation> getPendingDonations(@PathVariable Long organizationId) {
-        return donationsService.getPendingDonationsForOrganization(organizationId);
+    public ResponseEntity<List<Donation>> getPendingDonations(@PathVariable Long organizationId, Authentication authentication) {
+        long id = Long.valueOf(authentication.getDetails().toString());
+        if (id != organizationId) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        List<Donation> donations = donationsService.getPendingDonationsForOrganization(organizationId);
+        return new ResponseEntity<>(donations, HttpStatus.OK);
     }
 
     @GetMapping("/{organizationId}/declined_donations")
-    public List<Donation> getDeclinedDonations(@PathVariable Long organizationId) {
-        return donationsService.getDeclinedDonationsForOrganization(organizationId);
+    public ResponseEntity<List<Donation>> getDeclinedDonations(@PathVariable Long organizationId, Authentication authentication) {
+        long id = Long.valueOf(authentication.getDetails().toString());
+        if (id != organizationId) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        List<Donation> donations = donationsService.getDeclinedDonationsForOrganization(organizationId);
+        return new ResponseEntity<>(donations, HttpStatus.OK);
     }
 
     public void checkForEmptyRequest(EditOrganizationRequest request) {

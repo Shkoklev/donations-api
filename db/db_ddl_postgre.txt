@@ -80,7 +80,8 @@ CREATE TABLE "donation" (
 		ON UPDATE CASCADE,
 	"status" varchar(20),
 	"quantity" varchar NOT NULL,
-	"duration" TIMESTAMP WITHOUT TIME ZONE
+	"duration" TIMESTAMP WITHOUT TIME ZONE,
+	"accepted_on" TIMESTAMP WITHOUT TIME ZONE
 );
 
 -- INSERTING MOCK DATA INTO TABLES

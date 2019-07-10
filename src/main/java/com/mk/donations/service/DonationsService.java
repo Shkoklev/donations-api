@@ -8,6 +8,8 @@ public interface DonationsService {
 
     Donation donate(Long donorId, Long organizationId, Long demandId, Double quantity);
 
+    void deleteDonation(Long donorId, Long donationId);
+
     void acceptDonation(Long donationId);
 
     void declineDonation(Long donationId);

@@ -42,11 +42,6 @@ public class DonorController {
         return donorService.getDonorsPage(pageable);
     }
 
-//    @GetMapping("/{donorId}")
-//    public Donor getDonorById(@PathVariable Long donorId) {
-//        return donorService.getDonorById(donorId);
-//    }
-
     @PostMapping("/register")
     public Donor register(@Valid @RequestBody Donor donor) {
         return donorService.addDonor(donor);
@@ -94,6 +89,18 @@ public class DonorController {
         }
         Donation donation = donationService.donate(donorId, organizationId, demandId, quantityRequest.quantity);
         return new ResponseEntity<>(donation, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{donorId}/delete_donation/{donationId}")
+    public ResponseEntity<Void> deleteDonation(@PathVariable Long donorId,
+                               @PathVariable Long donationId,
+                               Authentication authentication) {
+        long id = Long.valueOf(authentication.getDetails().toString());
+        if (id != donorId) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        donationService.deleteDonation(donorId,donationId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/{donorId}/successful_donations")
