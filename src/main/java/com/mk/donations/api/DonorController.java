@@ -38,8 +38,8 @@ public class DonorController {
     }
 
     @GetMapping
-    public Page<Donor> getUsers(Pageable pageable) {
-        return donorService.getDonorsPage(pageable);
+    public List<Donor> getAllOrderedByPoints() {
+        return donorService.getAllDonorsOrderedByPoints();
     }
 
     @PostMapping("/register")

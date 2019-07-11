@@ -14,4 +14,6 @@ public class OrganizationDemandRequest {
     @NotNull(message = "Не смее да е празно !")
     public Double quantity;
 
+    public String organizationName;
+
 }

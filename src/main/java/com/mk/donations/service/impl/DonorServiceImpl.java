@@ -16,10 +16,22 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
 @Service
 public class DonorServiceImpl implements DonorService {
 
     private Logger LOGGER = LoggerFactory.getLogger(DonorServiceImpl.class);
+
+    private List<String> PICTURE_URLS = Arrays.asList(
+            "https://image.flaticon.com/icons/svg/149/149071.svg",
+            "https://image.flaticon.com/icons/svg/149/149995.svg",
+            "https://image.flaticon.com/icons/svg/149/149452.svg"
+    );
+
 
     private final DonorRepository donorRepository;
     private final PasswordEncoder passwordEncoder;
@@ -40,6 +52,11 @@ public class DonorServiceImpl implements DonorService {
     }
 
     @Override
+    public List<Donor> getAllDonorsOrderedByPoints() {
+        return this.donorRepository.findAllByOrderByPointsDesc();
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String email) {
         return donorRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(email));
@@ -53,8 +70,11 @@ public class DonorServiceImpl implements DonorService {
 
     @Override
     public Donor addDonor(Donor donor) {
+        Random ran = new Random();
         checkDonorExistence(donor.getEmail(), donor.getPhone());
         donor.setPassword(passwordEncoder.encode(donor.getPassword()));
+        int randomIndex = ran.nextInt(3);
+        donor.setPictureUrl(PICTURE_URLS.get(randomIndex));
         return donorRepository.save(donor);
     }
 

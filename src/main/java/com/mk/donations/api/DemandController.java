@@ -1,7 +1,12 @@
 package com.mk.donations.api;
 
 import com.mk.donations.model.Demand;
+import com.mk.donations.model.request.OrganizationDemandRequest;
+import com.mk.donations.repository.MailSenderRepository;
 import com.mk.donations.service.DemandService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -12,10 +17,15 @@ import java.util.List;
 @RequestMapping("/demands")
 public class DemandController {
 
-    private final DemandService demandService;
+    @Value("${admin.email}")
+    private String adminEmail;
 
-    public DemandController(DemandService demandService) {
+    private final DemandService demandService;
+    private final MailSenderRepository mailSenderRepository;
+
+    public DemandController(DemandService demandService, MailSenderRepository mailSenderRepository) {
         this.demandService = demandService;
+        this.mailSenderRepository = mailSenderRepository;
     }
 
     @GetMapping
@@ -31,6 +41,16 @@ public class DemandController {
     @GetMapping("/by_category/{categoryId}")
     public List<Demand> getAllByCategoryId(@PathVariable Long categoryId) {
         return demandService.getAllDemandsByCategoryId(categoryId);
+    }
+
+    @PostMapping("/new")
+    public ResponseEntity<Void> registerDemand(@Valid @RequestBody OrganizationDemandRequest demandRequest) {
+        System.out.println("gomna");
+        String to = adminEmail;
+        String subject = "Нова потреба за: " + demandRequest.organizationName;
+        String message = demandRequest.organizationName + " сака да додаде " + demandRequest.quantity + " X " + demandRequest.demandName;
+        this.mailSenderRepository.sentMail(to,subject,message);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 //    @PostMapping

@@ -1,6 +1,7 @@
 package com.mk.donations.repository;
 
 import com.mk.donations.model.Donation;
+import com.mk.donations.model.Donor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +18,5 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
     Optional<Donation> findByOrganization_IdAndDemand_IdAndDonorId(Long organizationId, Long demandId, Long donorId);
 
     List<Donation> findAllByStatus(String status);
+
 }

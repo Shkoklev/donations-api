@@ -19,6 +19,8 @@ public interface DonorService extends UserDetailsService {
 
     Donor addDonor(Donor donor);
 
+    List<Donor> getAllDonorsOrderedByPoints();
+
     Donor updateDonor(Long id, String firstName, String lastName, String email, String password, String phone, String pictureUrl);
 
     void deleteDonor(Long donorId);
